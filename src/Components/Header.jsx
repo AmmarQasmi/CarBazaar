@@ -50,6 +50,16 @@ function Header() {
                             </li>
                             <li>
                                 <NavLink
+                                    to="/Maintenance"
+                                    className={({ isActive }) =>
+                                        `block py-2 pr-4 pl-3 duration-200 border-b border-gray-700 hover:bg-gray-700 lg:hover:bg-transparent lg:border-0 hover:text-blue-400 lg:p-0 ${isActive ? "text-blue-300" : "text-gray-300"}`
+                                    }
+                                >
+                                    Maintenance Booking
+                                </NavLink>
+                            </li>
+                            <li>
+                                <NavLink
                                     to="/Contact"
                                     className={({ isActive }) =>
                                         `block py-2 pr-4 pl-3 duration-200 border-b border-gray-700 hover:bg-gray-700 lg:hover:bg-transparent lg:border-0 hover:text-blue-400 lg:p-0 ${isActive ? "text-blue-300" : "text-gray-300"}`

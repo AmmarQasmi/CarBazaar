@@ -15,9 +15,10 @@ import AdvancedSearch from './Components/AdvancedSearch.jsx';
 import BrowseCars from './Components/BrowseCars.jsx';
 import Contact from './Components/Contact.jsx';
 import ProtectedRoute from './Components/ProtectedRoute';  // Import the ProtectedRoute
+import Maintenance from './Components/Maintenance.jsx';
 
 // Simulate authentication status
-const isAuthenticated = false; // Set this to true if the user is authenticated
+const isAuthenticated = true; // Set this to true if the user is authenticated
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -26,6 +27,7 @@ const router = createBrowserRouter(
       <Route path="About" element={<About />} />
       <Route path="Login" element={<Login />} />
       <Route path="Signup" element={<Signup />} />
+      <Route path="Maintenance" element={<Maintenance />} />
       <Route path="seller" element={<ProtectedRoute isAuthenticated={isAuthenticated} element={SellWithUs} />} />
       <Route path="partner" element={<ProtectedRoute isAuthenticated={isAuthenticated} element={PartnerWithUs} />} />
       <Route path="join" element={<ProtectedRoute isAuthenticated={isAuthenticated} element={JoinUs} />} />
