@@ -11,7 +11,7 @@ function Header() {
                 <div className="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl">
                     <div className="flex justify-start">
                         <Link to="/Home">
-                            <img src="./CarLogo.png" alt="logo" className='h-7 w-auto cursor-pointer' />
+                            <img src="/CarLogo.png" alt="logo" className='h-7 w-auto cursor-pointer' />
                         </Link>
                     </div>
                     <div className="flex items-center">
