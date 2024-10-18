@@ -4,7 +4,7 @@ import { NavLink, Link } from 'react-router-dom';
 function Home() {
     return (
         <>
-            <section className="text-center p-8 mt-20">
+            <section className="text-center p-8 mt-28 sm:mt-10 md:mt-10 lg:mt-10">
                 <div className="max-w-4xl mx-auto text-center p-2 flex flex-col items-center">
                     <img
                         src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS9NQNjmmCjyfLYD7pdAsSXdfidy_h9S0Kd5g&s"

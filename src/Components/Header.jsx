@@ -6,7 +6,7 @@ function Header() {
     const [servicesDropdownOpen, setServicesDropdownOpen] = useState(false);
 
     return (
-        <header className='bg-gradient-to-r from-gray-700 to-gray-300 p-4 text-white shadow-md fixed w-full top-0 z-50'>
+        <header className='bg-gradient-to-r from-gray-700 to-gray-300 p-4 text-white shadow-md fixed w-full top-0 z-50 px-4 sm:px-6 md:px-8'>
             <nav className='bg-gradient-to-r from-gray-500 to-gray-600 border-gray-700 px-4 lg:px-6 py-2.5'>
                 <div className="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl">
                     <div className="flex justify-start">
@@ -78,6 +78,13 @@ function Header() {
                                             >
                                                 Finance Options
                                             </NavLink>
+                                            <NavLink
+                                                to="/seller"
+                                                className="block px-4 py-2 text-sm hover:bg-red-500 text-gray-300"
+                                                onClick={() => setServicesDropdownOpen(false)}
+                                            >
+                                                Sell the Car
+                                            </NavLink>
                                         </div>
                                     )}
                                 </div>
@@ -89,7 +96,7 @@ function Header() {
                                         `block py-2 pr-4 pl-3 duration-200 border-b border-gray-700 hover:bg-gray-700 lg:hover:bg-transparent lg:border-0 hover:text-red-400 lg:p-0 ${isActive ? "text-red-300" : "text-gray-300"}`
                                     }
                                 >
-                                    Contact Us
+                                    Contact
                                 </NavLink>
                             </li>
                         </ul>

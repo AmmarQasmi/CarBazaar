@@ -4,8 +4,8 @@ import { NavLink } from 'react-router-dom';
 function SellWithUs() {
     return (
         <>
-            <section className='mt-20 flex items-center bg-gray-300'>
-                <div className="bg-white text-black p-8 rounded-lg shadow-md w-full h-full">
+            <section className='mt-20 sm:mt-20 md:mt-20 lg:mt-15 xl:mt-14 flex items-center bg-gray-300'>
+                <div className="bg-white text-black p-8 rounded-lg shadow-md w-full h-full ">
                     <h2 className="text-2xl font-bold mb-6 text-center">Sell the car? You are at the right place</h2>
                     <form className="space-y-4">
                         <div>

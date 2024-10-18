@@ -4,7 +4,7 @@ import carImage from './cb.jpg'; // Adjust this path as needed
 
 function Contact() {
     return (
-        <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 relative">
+        <div className="flex flex-col items-center justify-center min-h-screen mt-28 sm:mt-16 md:mt-16 lg:mt-12 xl:mt-12 p-4 bg-gray-100 relative">
             <h1 className="text-3xl font-bold mb-8 text-gray-800">Contact Us</h1>
             <h3 className="mb-6 text-black text-center bg-gray-300">
                 We'd love to hear from you! Please fill out the form below, and we'll get back to you as soon as possible.
@@ -57,10 +57,7 @@ function Contact() {
                 <NavLink to="/Home" className="text-indigo-600 hover:underline">Back to Home</NavLink>
             </div>
 
-            {/* Image positioned in the right corner */}
-            <div className="absolute right-0 bottom-0 p-4">
-                <img src={carImage} alt="Car Bazaar" className="h-full w-full object-cover rounded-full" />
-            </div>
+
         </div>
     );
 }

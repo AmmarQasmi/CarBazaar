@@ -9,7 +9,7 @@ function FinanceOptions() {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-r from-gray-600 to-gray-400 p-8 mt-4">
+        <div className="min-h-screen bg-gradient-to-r from-gray-600 to-gray-400 p-4 sm:p-6 md:p-8 mt-28 mb-4 sm:mt-6 sm:mb-6 md:mt-16 md:mb-8 lg:mt-4 lg:mb-4">
             {/* Container for Finance Options */}
             <div className="max-w-screen-lg mx-auto bg-white rounded-lg shadow-lg p-8">
                 <div className="bg-gray-100 p-8">

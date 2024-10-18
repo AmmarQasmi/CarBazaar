@@ -17,8 +17,8 @@ function Login({onLogin}) {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4 py-6">
-            <div className="w-full max-w-md bg-white shadow-lg rounded-lg p-8 mt-12">
+        <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4 py-6 mt-2">
+            <div className="w-full max-w-md bg-white shadow-lg rounded-lg p-8">
                 <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">CarBazaar</h2>
                 <p className="text-lg text-center text-gray-600 mb-4">Please log in to continue</p>
                 <form onSubmit={validate} className="space-y-4">

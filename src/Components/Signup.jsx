@@ -51,7 +51,7 @@ function Signup() {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4 py-6">
+        <div className="mt-20 sm:mt-8 md:mt-8 lg:mt-2 xl:mt-2 min-h-screen flex items-center justify-center bg-gray-100 px-4 py-6">
             <div className="w-full max-w-md bg-white shadow-lg rounded-lg p-8 mt-12">
                 <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">New to CarBazaar?</h2>
                 <p className="text-lg text-center text-gray-600 mb-4">Please sign up to continue</p>

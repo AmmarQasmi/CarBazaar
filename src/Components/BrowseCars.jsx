@@ -38,7 +38,7 @@ function BrowseCars() {
     }
 
     return (
-        <div className="mt-16 container mx-auto px-4 py-10">
+        <div className="mt-28 mb-10 sm:mt-16 sm:mb-16 md:mt-20 md:mb-20 lg:mt-4 xl:mt-4 lg:mb-24 container mx-auto px-4 py-10 sm:px-6 md:px-8 lg:px-10 xl:px-12">
             <h1 className="text-4xl font-bold mb-6 text-center text-gray-900">Browse Cars</h1>
             <div className="grid gap-8 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
                 {cars.map((car) => (
@@ -69,6 +69,6 @@ BrowseCars.propTypes = {
         price: PropTypes.string.isRequired,
         img: PropTypes.string.isRequired,
     })),
-};  
+};
 
 export default BrowseCars;

@@ -19,7 +19,7 @@ function AdvancedSearch() {
         ];
 
         // Filter cars based on user input
-        const filteredCars = allCars.filter(car => 
+        const filteredCars = allCars.filter(car =>
             car.price >= priceRange[0] &&
             car.price <= priceRange[1] &&
             car.make.toLowerCase().includes(make.toLowerCase()) &&
@@ -31,7 +31,7 @@ function AdvancedSearch() {
     };
 
     return (
-        <div className="container mx-auto px-4 py-10 mt-16">
+        <div className="container mx-auto px-4 py-6 sm:py-8 md:py-10 lg:py-12 mt-28 sm:mt-10 md:mt-12 lg:mt-2">
             <h1 className="text-3xl font-bold mb-6 text-center">Advanced Search</h1>
 
             {/* Price Range Slider */}

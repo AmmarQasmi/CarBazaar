@@ -4,7 +4,7 @@ import { NavLink } from 'react-router-dom';
 function JoinUs() {
     return (
         <>
-            <section className='mt-40'>
+            <section className='mt-24 sm:mt-28 md:mt-20 lg:mt-20 xl:mt-20'>
                 <div className="bg-white text-black p-8 rounded-lg shadow-md max-w-md mx-auto">
                     <h2 className="text-2xl font-bold mb-6 text-center">Join Us</h2>
                     <form className="space-y-4">
@@ -59,7 +59,7 @@ function JoinUs() {
                     </form>
                 </div>
             </section>
-            <section className='relative p-8'>
+            <section className='relative p-8 mt-20'>
                 <div className="absolute right-4 bottom-4 flex flex-col space-y-4">
                     <NavLink
                         to='/partner'
