@@ -20,7 +20,7 @@ function Header() {
                                 <NavLink
                                     to="/Home"
                                     className={({ isActive }) =>
-                                        `block py-2 pr-4 pl-3 duration-200 border-b border-gray-700 hover:bg-gray-700 lg:hover:bg-transparent lg:border-0 hover:text-red-400 lg:p-0 ${isActive ? "text-red-00" : "text-gray-300"}`
+                                        `block py-2 pr-4 pl-3 duration-200 border-b border-gray-700 hover:bg-gray-700 lg:hover:bg-transparent lg:border-0 hover:text-red-400 lg:p-0 ${isActive ? "text-red-300" : "text-gray-300"}`
                                     }
                                 >
                                     Home
