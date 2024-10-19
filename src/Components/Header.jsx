@@ -72,11 +72,11 @@ function Header() {
                                                 Maintenance Booking
                                             </NavLink>
                                             <NavLink
-                                                to="/FinanceOption"
+                                                to="/InsuranceOptions"
                                                 className="block px-4 py-2 text-sm hover:bg-red-500 text-gray-300"
                                                 onClick={() => setServicesDropdownOpen(false)}
                                             >
-                                                Finance Options
+                                                Insurance Options
                                             </NavLink>
                                             <NavLink
                                                 to="/seller"

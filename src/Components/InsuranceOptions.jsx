@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-function FinanceOptions() {
+function InsuranceOptions() {
     const [showForm, setShowForm] = useState(false);
 
     // Function to toggle the form visibility
@@ -10,49 +10,47 @@ function FinanceOptions() {
 
     return (
         <div className="min-h-screen bg-gradient-to-r from-gray-600 to-gray-400 p-4 sm:p-6 md:p-8 mt-28 mb-4 sm:mt-6 sm:mb-6 md:mt-16 md:mb-8 lg:mt-4 lg:mb-4">
-            {/* Container for Finance Options */}
+            {/* Container for Insurance Options */}
             <div className="max-w-screen-lg mx-auto bg-white rounded-lg shadow-lg p-8">
                 <div className="bg-gray-100 p-8">
-                    <h1 className="text-4xl font-bold mb-8 text-center text-gray-900">Finance Options</h1>
+                    <h1 className="text-4xl font-bold mb-8 text-center text-gray-900">Insurance Options</h1>
 
                     <p className="mb-8 text-lg text-gray-700 text-center max-w-2xl mx-auto leading-relaxed">
-                        At our dealership, we offer a variety of financing options to help you purchase your next vehicle.
-                        Whether you're looking to buy or lease, we have solutions tailored to fit your needs.
+                        We provide a range of insurance options to protect you and your vehicle.
+                        Explore our tailored solutions designed to meet your needs.
                     </p>
 
-                    {/* Financing Types Section */}
+                    {/* Types of Insurance Section */}
                     <div className="bg-white shadow-lg rounded-lg p-6 mb-8 hover:bg-gray-50 hover:cursor-pointer">
-                        <h2 className="text-3xl font-semibold mb-6 text-gray-800">Types of Financing</h2>
+                        <h2 className="text-3xl font-semibold mb-6 text-gray-800">Types of Insurance</h2>
                         <ul className="list-disc list-inside mb-6 text-gray-700 space-y-3">
-                            <li>Auto Loans</li>
-                            <li>Leasing Options</li>
-                            <li>Special Financing for Qualified Buyers</li>
+                            <li>Comprehensive Coverage</li>
+                            <li>Collision Coverage</li>
+                            <li>Liability Insurance</li>
                         </ul>
                     </div>
 
-                    {/* Pre-Approval Section */}
-                    <div className="bg-white shadow-lg rounded-lg p-6  hover:bg-gray-50 hover:cursor-pointer">
-                        <h2 className="text-3xl font-semibold mb-6 text-gray-800">Get Pre-Approved</h2>
+                    {/* Quote Request Section */}
+                    <div className="bg-white shadow-lg rounded-lg p-6 hover:bg-gray-50 hover:cursor-pointer">
+                        <h2 className="text-3xl font-semibold mb-6 text-gray-800">Get a Quote</h2>
                         <p className="mb-6 text-lg text-gray-700 leading-relaxed">
-                            To streamline your car-buying process, consider getting pre-approved for financing.
-                            Fill out our secure application form to see what you qualify for.
+                            Ready to protect your investment? Fill out our secure application form to receive a personalized insurance quote.
                         </p>
                         <div className="text-center">
                             <button
                                 onClick={handleApplyNow}
                                 className="bg-blue-500 text-white py-3 px-8 rounded-lg shadow-lg hover:bg-blue-600 transition duration-300"
                             >
-                                {showForm ? 'Close Form' : 'Apply Now'}
+                                {showForm ? 'Close Form' : 'Request a Quote'}
                             </button>
                         </div>
                     </div>
                 </div>
 
-
                 {/* Form Rendering Based on State */}
                 {showForm && (
                     <div className="mt-8 p-6 bg-gray-100 rounded-lg shadow-md">
-                        <h3 className="text-2xl font-bold mb-4">Financial Service Application Form</h3>
+                        <h3 className="text-2xl font-bold mb-4">Insurance Application Form</h3>
                         <form className="grid gap-4">
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 {/* Full Name */}
@@ -62,6 +60,7 @@ function FinanceOptions() {
                                         type="text"
                                         className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-400"
                                         placeholder="Enter your full name"
+                                        required
                                     />
                                 </div>
                                 {/* Contact Information */}
@@ -71,6 +70,7 @@ function FinanceOptions() {
                                         type="tel"
                                         className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-400"
                                         placeholder="Enter your contact number"
+                                        required
                                     />
                                 </div>
                             </div>
@@ -83,6 +83,7 @@ function FinanceOptions() {
                                         type="email"
                                         className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-400"
                                         placeholder="Enter your email address"
+                                        required
                                     />
                                 </div>
                                 {/* Vehicle Information */}
@@ -92,18 +93,23 @@ function FinanceOptions() {
                                         type="text"
                                         className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-400"
                                         placeholder="Enter your vehicle model"
+                                        required
                                     />
                                 </div>
                             </div>
 
-                            {/* Finance Amount */}
+                            {/* Insurance Coverage Type */}
                             <div>
-                                <label className="block text-gray-700">Desired Finance Amount</label>
-                                <input
-                                    type="number"
+                                <label className="block text-gray-700">Coverage Type</label>
+                                <select
                                     className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-400"
-                                    placeholder="Enter the amount you want to finance"
-                                />
+                                    required
+                                >
+                                    <option value="">Select Coverage Type</option>
+                                    <option value="comprehensive">Comprehensive</option>
+                                    <option value="collision">Collision</option>
+                                    <option value="liability">Liability</option>
+                                </select>
                             </div>
 
                             {/* Additional Comments */}
@@ -136,25 +142,25 @@ function FinanceOptions() {
                     <div className="space-y-6 max-w-3xl mx-auto">
                         {/* Question 1 */}
                         <div className="bg-white p-6 rounded-lg shadow-lg hover:bg-gray-200 transition duration-300">
-                            <h3 className="font-bold text-xl text-gray-800 mb-2">1. What credit score do I need?</h3>
+                            <h3 className="font-bold text-xl text-gray-800 mb-2">1. What factors affect my insurance premium?</h3>
                             <p className="text-gray-700 leading-relaxed">
-                                Your credit score can impact the financing options available to you. Generally, a score of 700 or higher will qualify you for better rates.
+                                Your premium can be influenced by various factors including your driving history, vehicle type, and coverage level.
                             </p>
                         </div>
 
                         {/* Question 2 */}
                         <div className="bg-white p-6 rounded-lg shadow-lg hover:bg-gray-200 transition duration-300">
-                            <h3 className="font-bold text-xl text-gray-800 mb-2">2. Can I trade in my current vehicle?</h3>
+                            <h3 className="font-bold text-xl text-gray-800 mb-2">2. Can I customize my insurance policy?</h3>
                             <p className="text-gray-700 leading-relaxed">
-                                Yes! We accept trade-ins as part of your financing deal, which can help reduce the overall cost of your new vehicle.
+                                Yes! We offer customizable policies to fit your unique needs and preferences.
                             </p>
                         </div>
 
                         {/* Question 3 */}
                         <div className="bg-white p-6 rounded-lg shadow-lg hover:bg-gray-200 transition duration-300">
-                            <h3 className="font-bold text-xl text-gray-800 mb-2">3. How long does the financing process take?</h3>
+                            <h3 className="font-bold text-xl text-gray-800 mb-2">3. How do I file a claim?</h3>
                             <p className="text-gray-700 leading-relaxed">
-                                The financing process can typically be completed in about an hour, depending on the complexity of your situation.
+                                You can file a claim online or by contacting our customer service team for assistance.
                             </p>
                         </div>
                     </div>
@@ -165,4 +171,4 @@ function FinanceOptions() {
     );
 }
 
-export default FinanceOptions;
+export default InsuranceOptions;

@@ -1,30 +1,83 @@
 import React from 'react'
 import { NavLink, Link } from 'react-router-dom';
+import { useState,useEffect } from 'react';
 
 function Home() {
+
+    const images = [
+        "https://live.staticflickr.com/4348/36326314265_3e7a4652b9_b.jpg",
+        "https://images.pexels.com/photos/39501/lamborghini-brno-racing-car-automobiles-39501.jpeg?cs=srgb&dl=pexels-pixabay-39501.jpg&fm=jpg",
+        "https://wallpapers.com/images/hd/1920-x-1080-car-aay5ru9j8iazqofr.jpg",
+    ];
+
+    const [currentImage, setCurrentImage] = useState(0);
+
+    // Automatically change images every 5 seconds
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setCurrentImage((prevImage) => (prevImage + 1) % images.length);
+        }, 5000);
+        return () => clearInterval(interval); 
+    }, [images.length]);
+
+    // Handlers for manual navigation
+    const goToPrevious = () => {
+        setCurrentImage((prevImage) => (prevImage - 1 + images.length) % images.length);
+    };
+
+    const goToNext = () => {
+        setCurrentImage((prevImage) => (prevImage + 1) % images.length);
+    };
+
     return (
         <>
-            <section className="text-center p-8 mt-28 sm:mt-10 md:mt-10 lg:mt-10">
-                <div className="max-w-4xl mx-auto text-center p-2 flex flex-col items-center">
-                    <img
-                        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS9NQNjmmCjyfLYD7pdAsSXdfidy_h9S0Kd5g&s"
-                        alt="find a car"
-                        className="w-80 h-80 mb-5 rounded-full"
-                    />
-                    <h1 className="text-4xl font-bold text-gray-800 mb-2">
-                        Find a Perfect Car for You or Sell Yours
-                    </h1>
-                </div>
+            <section className="relative text-center p-8 mt-10 sm:mt-5 md:mt-10 lg:mt-10 xl:mt-0 h-screen overflow-hidden">
+                {/* Carousel container */}
+                <div className="relative h-full w-full">
+                    {/* Images for the carousel */}
+                    <div className="absolute inset-0 h-full w-full bg-cover bg-center transition-opacity duration-1000">
+                        {images.map((image, index) => (
+                            <img
+                                key={index}
+                                src={image}
+                                alt={`Car ${index + 1}`}
+                                className={`w-full h-full object-cover ${index === currentImage ? "block" : "hidden"}`}
+                            />
+                        ))}
+                    </div>
 
-                <div className="relative max-w-lg mx-auto mt-6">
-                    <input
-                        type="text"
-                        placeholder="Search for cars..."
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
-                    />
-                    <button className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600">
-                        Search
+                    {/* Arrows for navigation */}
+                    <button
+                        onClick={goToPrevious}
+                        className="absolute left-5 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full hover:bg-gray-600 z-10"
+                    >
+                        &#9664;
                     </button>
+                    <button
+                        onClick={goToNext}
+                        className="absolute right-5 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full hover:bg-gray-600 z-10"
+                    >
+                        &#9654;
+                    </button>
+
+                    {/* Content and Search bar on top of the images */}
+                    <div className="absolute inset-0 flex flex-col justify-center items-center">
+                        <div className="bg-black bg-opacity-50 p-5 rounded-lg">
+                            <h1 className="text-4xl font-bold text-white mb-5">
+                                Find a Perfect Car for You or Sell Yours
+                            </h1>
+                            <div className="relative w-full max-w-lg">
+                                <input
+                                    type="text"
+                                    placeholder="Search for cars..."
+                                    className="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+                                />
+                                <button className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600">
+                                    Search
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </section>
 
@@ -52,7 +105,7 @@ function Home() {
                                 <NavLink to='/Browse' className="mt-4 px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors">
                                     View Cars
                                 </NavLink>
-                            </div>  
+                            </div>
 
                             {/* Search for Cars */}
                             <div className="bg-white shadow-lg rounded-lg p-6 hover:shadow-xl transition-transform duration-300 hover:scale-105 cursor-pointer">
@@ -86,7 +139,7 @@ function Home() {
                     </div>
 
                 </div>
-        </section >
+            </section >
 
             <section className="bg-gray-100 py-12">
                 <div className="max-w-4xl mx-auto text-center p-8">

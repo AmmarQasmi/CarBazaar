@@ -10,12 +10,12 @@ import Signup from './Components/Signup.jsx';
 import SellWithUs from './Components/SellWithUs.jsx';
 import PartnerWithUs from './Components/PartnerWithUs.jsx';
 import JoinUs from './Components/JoinUs.jsx';
-import FinanceOptions from './Components/FinanceOptions.jsx';
 import AdvancedSearch from './Components/AdvancedSearch.jsx';
 import BrowseCars from './Components/BrowseCars.jsx';
 import Contact from './Components/Contact.jsx';
 import ProtectedRoute from './Components/ProtectedRoute';  // Import the ProtectedRoute
 import Maintenance from './Components/Maintenance.jsx';
+import InsuranceOptions from './Components/InsuranceOptions.jsx';
 
 // Simulate authentication status
 const isAuthenticated = true; // Set this to true if the user is authenticated
@@ -31,7 +31,7 @@ const router = createBrowserRouter(
       <Route path="seller" element={<ProtectedRoute isAuthenticated={isAuthenticated} element={SellWithUs} />} />
       <Route path="partner" element={<ProtectedRoute isAuthenticated={isAuthenticated} element={PartnerWithUs} />} />
       <Route path="join" element={<ProtectedRoute isAuthenticated={isAuthenticated} element={JoinUs} />} />
-      <Route path="FinanceOption" element={<ProtectedRoute isAuthenticated={isAuthenticated} element={FinanceOptions} />} />
+      <Route path="InsuranceOptions" element={<ProtectedRoute isAuthenticated={isAuthenticated} element={InsuranceOptions} />} />
       <Route path="AdvanceSearch" element={<ProtectedRoute isAuthenticated={isAuthenticated} element={AdvancedSearch} />} />
       <Route path="Browse" element={<BrowseCars />} />
       <Route path="Contact" element={<Contact />} />
