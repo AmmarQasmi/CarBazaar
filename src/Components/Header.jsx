@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { NavLink, Link } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCirclePlus } from '@fortawesome/free-solid-svg-icons';
 
 function Header() {
     const [searchDropdownOpen, setSearchDropdownOpen] = useState(false);
@@ -11,7 +13,7 @@ function Header() {
                 <div className="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl">
                     <div className="flex justify-start">
                         <Link to="/Home">
-                            <img src="/CarLogo.png" alt="logo" className='h-7 w-auto cursor-pointer' />
+                            <img src="./CarLogo.png" alt="logo" className='h-7 w-auto cursor-pointer' />
                         </Link>
                     </div>
                     <div className="flex items-center">
@@ -102,6 +104,14 @@ function Header() {
                         </ul>
                     </div>
                     <div className="flex justify-end space-x-4">
+                        <NavLink
+                            to="/seller"
+                            className={({ isActive }) =>
+                                `block py-2 pr-4 pl-3 duration-200 border-b border-gray-700 hover:bg-gray-700 lg:hover:bg-transparent lg:border-0 hover:text-red-400 lg:p-0 ${isActive ? "text-white" : "text-gray-300"}`
+                            }
+                        >
+                            <FontAwesomeIcon icon={faCirclePlus} className="mr-6 text-xl" />
+                        </NavLink>
                         <NavLink
                             to="/Login"
                             className={({ isActive }) =>

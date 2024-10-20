@@ -1,6 +1,9 @@
 import React from 'react'
 import { NavLink, Link } from 'react-router-dom';
-import { useState,useEffect } from 'react';
+import { useState, useEffect } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faArrowRight, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+
 
 function Home() {
 
@@ -17,7 +20,7 @@ function Home() {
         const interval = setInterval(() => {
             setCurrentImage((prevImage) => (prevImage + 1) % images.length);
         }, 5000);
-        return () => clearInterval(interval); 
+        return () => clearInterval(interval);
     }, [images.length]);
 
     // Handlers for manual navigation
@@ -31,9 +34,9 @@ function Home() {
 
     return (
         <>
-            <section className="relative text-center p-8 mt-10 sm:mt-5 md:mt-10 lg:mt-10 xl:mt-0 h-screen overflow-hidden">
+            <section className="relative text-center m-0 p-0 w-screen h-screen overflow-hidden">
                 {/* Carousel container */}
-                <div className="relative h-full w-full">
+                <div className="absolute inset-0 h-full w-full">
                     {/* Images for the carousel */}
                     <div className="absolute inset-0 h-full w-full bg-cover bg-center transition-opacity duration-1000">
                         {images.map((image, index) => (
@@ -42,6 +45,7 @@ function Home() {
                                 src={image}
                                 alt={`Car ${index + 1}`}
                                 className={`w-full h-full object-cover ${index === currentImage ? "block" : "hidden"}`}
+                                style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}
                             />
                         ))}
                     </div>
@@ -49,15 +53,15 @@ function Home() {
                     {/* Arrows for navigation */}
                     <button
                         onClick={goToPrevious}
-                        className="absolute left-5 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full hover:bg-gray-600 z-10"
+                        className="absolute left-6 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-4 rounded-full hover:bg-red-500 hover:scale-105 active:scale-95 transition-all z-10 focus:outline-none"
                     >
-                        &#9664;
+                        <FontAwesomeIcon icon={faArrowLeft} />
                     </button>
                     <button
                         onClick={goToNext}
-                        className="absolute right-5 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full hover:bg-gray-600 z-10"
+                        className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-4 rounded-full hover:bg-red-500 hover:scale-105 active:scale-95 transition-all z-10 focus:outline-none"
                     >
-                        &#9654;
+                        <FontAwesomeIcon icon={faArrowRight} />
                     </button>
 
                     {/* Content and Search bar on top of the images */}
@@ -70,9 +74,9 @@ function Home() {
                                 <input
                                     type="text"
                                     placeholder="Search for cars..."
-                                    className="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+                                    className="w-full px-4 py-3 pr-20 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
                                 />
-                                <button className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600">
+                                <button className="absolute right-0 top-0 h-full bg-blue-500 text-white px-6 py-3 rounded-r-lg hover:bg-blue-600">
                                     Search
                                 </button>
                             </div>

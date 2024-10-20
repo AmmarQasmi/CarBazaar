@@ -1,13 +1,37 @@
-import React from 'react'
+import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 
 function SellWithUs() {
+    const [price, setPrice] = useState('');
+    const [description, setDescription] = useState('');
+    const [images, setImages] = useState([]);
+    const [make, setMake] = useState('');
+    const [model, setModel] = useState('');
+    const [variant, setVariant] = useState('');
+    const [sellerId, setSellerId] = useState('');
+
+    const handleImageChange = (e) => {
+        setImages(Array.from(e.target.files));
+    };
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        const formData = new FormData();
+        formData.append('price', price);
+        formData.append('description', description);
+        images.forEach((image) => formData.append('images', image)); 
+        formData.append('make', make);
+        formData.append('model', model);
+        formData.append('variant', variant);
+        formData.append('seller_id', sellerId); 
+    };
+
     return (
         <>
-            <section className='mt-20 sm:mt-20 md:mt-20 lg:mt-15 xl:mt-14 flex items-center bg-gray-300'>
+            <section className='mt-20 flex items-center bg-gray-300'>
                 <div className="bg-white text-black p-8 rounded-lg shadow-md w-full h-full ">
                     <h2 className="text-2xl font-bold mb-6 text-center">Sell the car? You are at the right place</h2>
-                    <form className="space-y-4">
+                    <form className="space-y-4" onSubmit={handleSubmit}>
                         <div>
                             <h5 className="text-md font-bold mb-6 text-left underline">Car Details</h5>
 
@@ -17,10 +41,11 @@ function SellWithUs() {
                                 </label>
                                 <input
                                     id="make"
+                                    value={make}
+                                    onChange={(e) => setMake(e.target.value)}
                                     placeholder='Enter Company Name'
                                     className="w-full mb-5 px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                                >
-                                </input>
+                                />
                             </div>
 
                             <div>
@@ -29,10 +54,11 @@ function SellWithUs() {
                                 </label>
                                 <input
                                     id="model"
+                                    value={model}
+                                    onChange={(e) => setModel(e.target.value)}
                                     placeholder='Enter Specific Model'
                                     className="w-full mb-5 px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                                >
-                                </input>
+                                />
                             </div>
 
                             <div>
@@ -41,10 +67,11 @@ function SellWithUs() {
                                 </label>
                                 <select
                                     id="variant"
-                                    placeholder='Select Variant'
+                                    value={variant}
+                                    onChange={(e) => setVariant(e.target.value)}
                                     className="w-full mb-5 px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
                                 >
-                                    <option value="" disabled selected>Select Variant</option>
+                                    <option value="" disabled>Select Variant</option>
                                     <option value="base">Base</option>
                                     <option value="sport">Sport</option>
                                     <option value="luxury">Luxury</option>
@@ -54,53 +81,44 @@ function SellWithUs() {
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium mb-1" htmlFor="image">
+                                <label className="block text-sm font-medium mb-1" htmlFor="images">
                                     Upload Car Photos
                                 </label>
                                 <input
                                     type='file'
-                                    id='image'
+                                    id='images'
                                     className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
                                     accept="image/*"
+                                    onChange={handleImageChange}
                                     multiple
                                 />
                             </div>
                             <br /> <hr />
                         </div>
 
-                        <h5 className="text-md font-bold mb-6 text-left underline">Contact Information</h5>
-                        <label className="block text-sm font-medium mb-1" htmlFor="name">
-                            Name:
+                        <h5 className="text-md font-bold mb-6 text-left underline">Post Details</h5>
+                        <label className="block text-sm font-medium mb-1" htmlFor="description">
+                            Description:
+                        </label>
+                        <textarea
+                            id="description"
+                            value={description}
+                            onChange={(e) => setDescription(e.target.value)}
+                            className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            placeholder="Enter car description"
+                        />
+                        
+                        <label className="block text-sm font-medium mb-1" htmlFor="price">
+                            Price:
                         </label>
                         <input
-                            type="text"
-                            id="name"
+                            type="number"
+                            id="price"
+                            value={price}
+                            onChange={(e) => setPrice(e.target.value)}
                             className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                            placeholder="Enter your name"
+                            placeholder="Enter price"
                         />
-                        <div>
-                            <label className="block text-sm font-medium mb-1" htmlFor="email">
-                                Email:
-                            </label>
-                            <input
-                                type="email"
-                                id="email"
-                                className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                                placeholder="Enter your email"
-                            />
-                        </div>
-                        <div>
-                            <label className="block text-sm font-medium mb-1" htmlFor="email">
-                                Phone Number
-                            </label>
-                            <input
-                                type='tel'
-                                id='tel'
-                                className="w-full px-2 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                                placeholder="Enter your Number  "
-                            />
-                        </div>
-
 
                         <button
                             type="submit"
@@ -135,7 +153,7 @@ function SellWithUs() {
                 </div>
             </section>
         </>
-    )
+    );
 }
 
-export default SellWithUs
+export default SellWithUs;

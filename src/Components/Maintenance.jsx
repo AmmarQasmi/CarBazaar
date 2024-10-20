@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faArrowRight, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 
 function Maintenance() {
     const images = [
@@ -40,15 +42,15 @@ function Maintenance() {
             {/* Navigation Arrows */}
             <button
                 onClick={goToPrevious}
-                className="absolute left-5 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full hover:bg-gray-600 z-10"
+                className="absolute left-6 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-4 rounded-full hover:bg-red-500 hover:scale-105 active:scale-95 transition-all z-10 focus:outline-none"
             >
-                &#9664;
+                <FontAwesomeIcon icon={faArrowLeft} />
             </button>
             <button
                 onClick={goToNext}
-                className="absolute right-5 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full hover:bg-gray-600 z-10"
+                className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-4 rounded-full hover:bg-red-500 hover:scale-105 active:scale-95 transition-all z-10 focus:outline-none"
             >
-                &#9654;
+                <FontAwesomeIcon icon={faArrowRight} />
             </button>
 
             {/* Form Container */}
