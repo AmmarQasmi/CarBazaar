@@ -66,7 +66,7 @@ function Home() {
 
                     {/* Content and Search bar on top of the images */}
                     <div className="absolute inset-0 flex flex-col justify-center items-center">
-                        <div className="bg-black bg-opacity-50 p-5 rounded-lg">
+                        <div className="bg-black bg-opacity-50 p-5 rounded-lg mb-20">
                             <h1 className="text-4xl font-bold text-white mb-5">
                                 Find a Perfect Car for You or Sell Yours
                             </h1>
