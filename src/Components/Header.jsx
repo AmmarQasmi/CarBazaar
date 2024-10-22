@@ -11,11 +11,9 @@ function Header() {
         <header className='bg-gradient-to-r text-white shadow-md fixed w-full top-0 z-50'>
             <nav className='bg-gradient-to-r from-gray-950 to-gray-600 border-gray-700 py-2.5 w-full'>
                 <div className="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl px-4 lg:px-6">
-                    <div className="flex justify-start">
-                        <Link to="/">
-                            <img src="./c1.png" alt="logo" className='h-8 w-auto cursor-pointer' />
-                        </Link>
-                    </div>
+                    <Link to="/">
+                        <img src="./CAR_latest.png" alt="logo" className='h-8 w-auto cursor-pointer' />
+                    </Link>
                     <div className="flex items-center">
                         <ul className="flex flex-row space-x-8 mt-4 font-medium lg:mt-0">
                             <li>
