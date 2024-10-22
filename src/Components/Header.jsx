@@ -12,7 +12,7 @@ function Header() {
             <nav className='bg-gradient-to-r from-gray-950 to-gray-600 border-gray-700 py-2.5 w-full'>
                 <div className="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl px-4 lg:px-6">
                     <div className="flex justify-start">
-                        <Link to="/Home">
+                        <Link to="/">
                             <img src="./c1.png" alt="logo" className='h-8 w-auto cursor-pointer' />
                         </Link>
                     </div>
@@ -20,7 +20,7 @@ function Header() {
                         <ul className="flex flex-row space-x-8 mt-4 font-medium lg:mt-0">
                             <li>
                                 <NavLink
-                                    to="/Home"
+                                    to="/"
                                     className={({ isActive }) =>
                                         `block py-2 pr-4 pl-3 duration-200 border-b border-gray-700 hover:bg-gray-700 lg:hover:bg-transparent lg:border-0 hover:text-red-400 lg:p-0 ${isActive ? "text-red-300" : "text-gray-300"}`
                                     }

@@ -18,12 +18,12 @@ import Maintenance from './Components/Maintenance.jsx';
 import InsuranceOptions from './Components/InsuranceOptions.jsx';
 
 // Simulate authentication status
-const isAuthenticated = true; // Set this to true if the user is authenticated
+const isAuthenticated = false; // Set this to true if the user is authenticated
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<Layout />}>
-      <Route path="Home" element={<Home />} />
+      <Route path="" element={<Home />} />
       <Route path="About" element={<About />} />
       <Route path="Login" element={<Login />} />
       <Route path="Signup" element={<Signup />} />
