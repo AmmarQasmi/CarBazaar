@@ -32,6 +32,7 @@ function Home() {
         setCurrentImage((prevImage) => (prevImage + 1) % images.length);
     };
 
+
     return (
         <>
             <section className="relative text-center m-0 p-0 w-screen h-screen overflow-hidden">
@@ -45,7 +46,7 @@ function Home() {
                                 src={image}
                                 alt={`Car ${index + 1}`}
                                 className={`w-full h-full object-cover ${index === currentImage ? "block" : "hidden"}`}
-                                style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}
+                                style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, filter: 'blur(4px)' }}
                             />
                         ))}
                     </div>
@@ -67,16 +68,16 @@ function Home() {
                     {/* Content and Search bar on top of the images */}
                     <div className="absolute inset-0 flex flex-col justify-center items-center">
                         <div className="bg-black bg-opacity-50 p-5 rounded-lg mb-20">
-                            <h1 className="text-4xl font-bold text-white mb-5">
+                            <h1 className="text-4xl font-bold text-red-300 mb-5">
                                 Find a Perfect Car for You or Sell Yours
                             </h1>
                             <div className="relative w-full max-w-lg">
                                 <input
                                     type="text"
                                     placeholder="Search for cars..."
-                                    className="w-full px-4 py-3 pr-20 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+                                    className="w-full px-4 py-3 pr-20 border border-red-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-red-400"
                                 />
-                                <button className="absolute right-0 top-0 h-full bg-blue-500 text-white px-6 py-3 rounded-r-lg hover:bg-blue-600">
+                                <button className="absolute right-0 top-0 h-full bg-red-500 text-white px-6 py-3 rounded-r-lg hover:bg-red-400">
                                     Search
                                 </button>
                             </div>
@@ -106,7 +107,7 @@ function Home() {
                                 />
                                 <h3 className="text-xl font-semibold text-gray-800 mt-4 mb-2">Browse Cars</h3>
                                 <p className="text-gray-600 mb-4">Check out a variety of cars available for sale, from sedans to SUVs.</p>
-                                <NavLink to='/Browse' className="mt-4 px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors">
+                                <NavLink to='/Browse' className="mt-4 px-6 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors">
                                     View Cars
                                 </NavLink>
                             </div>
@@ -120,7 +121,7 @@ function Home() {
                                 />
                                 <h3 className="text-xl font-semibold text-gray-800 mt-4 mb-2">Search for Cars</h3>
                                 <p className="text-gray-600 mb-4">Use our advanced search to find cars that match your exact criteria.</p>
-                                <NavLink to='/AdvanceSearch' className="mt-4 px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors">
+                                <NavLink to='/AdvanceSearch' className="mt-4 px-6 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors">
                                     Search Cars
                                 </NavLink>
                             </div>
@@ -134,7 +135,7 @@ function Home() {
                                 />
                                 <h3 className="text-xl font-semibold text-gray-800 mt-4 mb-2">Finance Options</h3>
                                 <p className="text-gray-600 mb-4">Explore flexible finance options to fit your budget and get the car you need.</p>
-                                <NavLink to='/FinanceOption' className="mt-4 px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors">
+                                <NavLink to='/FinanceOption' className="mt-4 px-6 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors">
                                     Explore Finance
                                 </NavLink>
                             </div>
@@ -162,8 +163,8 @@ function Home() {
                                 <p className="text-gray-600 mb-6">Sell Cars and connect with buyers effortlessly.</p>
                                 <NavLink
                                     to='/seller'
-                                    className="mt-4 px-6 py-2 bg-black text-white rounded-lg hover:bg-gray-500">
-                                    Sell with us
+                                    className="mt-4 px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">
+                                    Post the car
                                 </NavLink>
                             </div>
                             <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTAfWDNKGyGLeMBOSLGsw7ngqSYwe5pTuBHQg&s" alt="Browse image" className="sm:w-1/3 w-full object-cover rounded-lg sm:ml-6 mt-4 sm:mt-0" />
@@ -175,7 +176,7 @@ function Home() {
                                 <p className="text-gray-600 mb-6">Partner with CarBazaar to reach more car enthusiasts.</p>
                                 <NavLink
                                     to='/partner'
-                                    className="mt-4 px-6 py-2 bg-black text-white rounded-lg hover:bg-gray-500">
+                                    className="mt-4 px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">
                                     Partner with us
                                 </NavLink>
                             </div>
@@ -188,7 +189,7 @@ function Home() {
                                 <p className="text-gray-600 mb-6">Join us in revolutionizing the car industry.</p>
                                 <NavLink
                                     to='/join'
-                                    className="mt-4 px-6 py-2 bg-black text-white rounded-lg hover:bg-gray-500">
+                                    className="mt-4 px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">
                                     Join our team
                                 </NavLink>
                             </div>
