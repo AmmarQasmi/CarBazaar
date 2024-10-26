@@ -32,21 +32,21 @@ function Home() {
         setCurrentImage((prevImage) => (prevImage + 1) % images.length);
     };
 
-
+    
     return (
         <>
             <section className="relative text-center m-0 p-0 w-screen h-screen overflow-hidden">
                 {/* Carousel container */}
-                <div className="absolute inset-0 h-full w-full">
+                <div className="absolute inset-0 h-screen w-screen">
                     {/* Images for the carousel */}
-                    <div className="absolute inset-0 h-full w-full bg-cover bg-center transition-opacity duration-1000">
+                    <div className="absolute inset-0 h-screen w-screen bg-cover bg-center transition-opacity duration-1000">
                         {images.map((image, index) => (
                             <img
                                 key={index}
                                 src={image}
                                 alt={`Car ${index + 1}`}
                                 className={`w-full h-full object-cover ${index === currentImage ? "block" : "hidden"}`}
-                                style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, filter: 'blur(4px)' }}
+                                style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, filter: 'blur(2px)', objectFit:'cover' }}
                             />
                         ))}
                     </div>
@@ -54,13 +54,13 @@ function Home() {
                     {/* Arrows for navigation */}
                     <button
                         onClick={goToPrevious}
-                        className="absolute left-6 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-4 rounded-full hover:bg-red-500 hover:scale-105 active:scale-95 transition-all z-10 focus:outline-none"
+                        className="absolute bg-transparent left-6 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-4 rounded-full hover:bg-red-500 hover:scale-105 active:scale-95 transition-all z-10 focus:outline-none"
                     >
                         <FontAwesomeIcon icon={faArrowLeft} />
                     </button>
                     <button
                         onClick={goToNext}
-                        className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-4 rounded-full hover:bg-red-500 hover:scale-105 active:scale-95 transition-all z-10 focus:outline-none"
+                        className="absolute bg-transparent right-4 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-4 rounded-full hover:bg-red-500 hover:scale-105 active:scale-95 transition-all z-10 focus:outline-none"
                     >
                         <FontAwesomeIcon icon={faArrowRight} />
                     </button>
@@ -86,7 +86,7 @@ function Home() {
                 </div>
             </section>
 
-            <section className="bg-gray-50 py-16">
+            <section className="bg-gray-50 py-16 scrollEffect">
                 <div className="max-w-4xl mx-auto text-center p-8">
                     <h2 className="text-3xl font-extrabold text-gray-800 mb-4">
                         Explore Our Car Marketplace
@@ -146,7 +146,7 @@ function Home() {
                 </div>
             </section >
 
-            <section className="bg-gray-100 py-12">
+            <section className="bg-gray-100 py-12 scrollEffect">
                 <div className="max-w-4xl mx-auto text-center p-8">
                     <h2 className="text-3xl font-extrabold text-gray-800 mb-4">
                         Join CarBazaar Community

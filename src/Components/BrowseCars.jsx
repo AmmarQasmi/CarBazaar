@@ -1,74 +1,71 @@
-import React, { useState, useEffect } from 'react';
-import PropTypes from 'prop-types';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 
-const fetchCars = async () => {
-    return [
-        { id: 1, make: 'Toyota', model: 'Corolla', year: 2020, price: '$20,000', img: 'https://imgcdn.zigwheels.pk/large/gallery/exterior/14/118/toyota-corolla-front-angle-low-view.jpg' },
-        { id: 2, make: 'Honda', model: 'Civic', year: 2019, price: '$18,500', img: 'https://cache4.pakwheels.com/system/car_generation_pictures/7370/original/Cover.jpg?1677570254' },
-        { id: 3, make: 'Ford', model: 'Mustang', year: 2021, price: '$30,000', img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQXo8lJkh5R8kaQi3lIl2yipLmX6B-hkQ1bYw&s' },
-    ];
-};
+const BrowseCar = () => {
+  const [cars, setCars] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-function BrowseCars() {
-    const [cars, setCars] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+  useEffect(() => {
+    const fetchCars = async () => {
+      try {
+        const response = await axios.get('http://localhost:5000/api/cars');
+        setCars(response.data);
+      } catch (error) {
+        console.error('Error fetching car data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-    useEffect(() => {
-        const loadCars = async () => {
-            try {
-                const carData = await fetchCars();
-                setCars(carData);
-            } catch (err) {
-                setError(err.message);
-            } finally {
-                setLoading(false);
-            }
-        };
+    fetchCars();
+  }, []);
 
-        loadCars();
-    }, []);
+  const handlePurchase = (carId) => {
+    // Handle the purchase logic here (e.g., redirect to a purchase page or show a modal)
+    console.log(`Purchasing car with ID: ${carId}`);
+  };
 
-    if (loading) {
-        return <div>Loading...</div>;
-    }
+  if (loading) {
+    return <p>Loading cars...</p>;
+  }
 
-    if (error) {
-        return <div>Error: {error}</div>;
-    }
+  return (
+    <div className="p-6 bg-gray-100 rounded-lg shadow-md">
+      <h2 className="text-2xl font-semibold mb-4">Browse Cars</h2>
 
-    return (
-        <div className="mt-28 mb-10 sm:mt-16 sm:mb-16 md:mt-20 md:mb-20 lg:mt-4 xl:mt-4 lg:mb-24 container mx-auto px-4 py-10 sm:px-6 md:px-8 lg:px-10 xl:px-12">
-            <h1 className="text-4xl font-bold mb-6 text-center text-gray-900">Browse Cars</h1>
-            <div className="grid gap-8 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-                {cars.map((car) => (
-                    <div key={car.id} className="bg-white shadow-lg rounded-lg p-6 transition-transform duration-300 hover:shadow-xl hover:scale-105 cursor-pointer">
-                        <img
-                            src={car.img}
-                            alt={`${car.make} ${car.model}`}
-                            className="w-full h-52 object-cover rounded-md mb-4"
-                        />
-                        <h3 className="text-2xl font-semibold text-gray-800 mb-2">{car.make} {car.model}</h3>
-                        <p className="text-lg text-gray-600 mb-2">Year: <span className="font-medium">{car.year}</span></p>
-                        <p className="text-lg text-gray-600 mb-4">Price: <span className="font-medium">{car.price}</span></p>
-                        <button className="mt-4 px-8 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors">
-                            View Details
-                        </button>
-                    </div>
-                ))}
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+        {cars.length > 0 ? (
+          cars.map(car => (
+            <div key={car.id} className="car-card bg-white rounded-lg shadow-lg p-4 text-center transition-transform transform hover:scale-105">
+              <img src={car.img} alt={`${car.make} ${car.model}`} className="rounded-md mb-2" />
+              <h3 className="text-lg font-bold">{car.make} {car.model}</h3>
+              <p className="text-sm text-gray-500">Variant: {car.variant}</p>
+              <p className="text-sm text-gray-500">Year: {car.year}</p>
+              <p className="text-lg font-semibold text-blue-600">Price: ${car.price}</p>
+
+              {car.available ? (
+                <button
+                  onClick={() => handlePurchase(car.id)}
+                  className="mt-4 bg-blue-500 text-white py-2 px-4 rounded transition-colors duration-300 hover:bg-blue-600"
+                >
+                  Purchase
+                </button>
+              ) : (
+                <button
+                  disabled
+                  className="mt-4 bg-gray-400 text-white py-2 px-4 rounded cursor-not-allowed"
+                >
+                  Unavailable
+                </button>
+              )}
             </div>
-        </div>
-    );
-}
-BrowseCars.propTypes = {
-    cars: PropTypes.arrayOf(PropTypes.shape({
-        id: PropTypes.number.isRequired,
-        make: PropTypes.string.isRequired,
-        model: PropTypes.string.isRequired,
-        year: PropTypes.number.isRequired,
-        price: PropTypes.string.isRequired,
-        img: PropTypes.string.isRequired,
-    })),
+          ))
+        ) : (
+          <p className="col-span-full text-center text-gray-600">No cars available.</p>
+        )}
+      </div>
+    </div>
+  );
 };
 
-export default BrowseCars;
+export default BrowseCar;
