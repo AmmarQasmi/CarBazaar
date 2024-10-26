@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
-// import emailjs from 'emailjs-com';
 import { Link } from 'react-router-dom';
 
 function Signup() {
     const [info, setInfo] = useState("");
     const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState({
-        username: '',
+        username: '',  // This will be used as 'name' in the backend
         email: '',
         password: '',
-        confirmPassword: ''
+        confirmPassword: '',
+        phone_no: ''  // Add this field for phone number
     });
 
     const handleChange = (e) => {
@@ -20,7 +20,7 @@ function Signup() {
         });
     };
 
-    const validate = (e) => {
+    const validate = async (e) => {
         e.preventDefault();
 
         const { password, confirmPassword } = formData;
@@ -32,22 +32,33 @@ function Signup() {
 
         setLoading(true);
 
-        // const emailParams = {
-        //     username: formData.username,
-        //     email: formData.email,
-        // };
+        try {
+            const response = await fetch('http://localhost:5000/signup', { // Adjust the endpoint URL accordingly
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    email: formData.email,
+                    name: formData.username, // Sending username as name
+                    password: formData.password,
+                    phone_no: formData.phone_no // Include phone number
+                }),
+            });
 
-    //     emailjs.send('service_und4kzv', 'template_tnx8b7p', emailParams, 'e63xOndbGeAyh7oKO')
-    //         .then((result) => {
-    //             console.log('Email sent successfully:', result.text);
-    //             setInfo("Form Submitted Successfully");
-    //             setLoading(false);
-    //         }, (error) => {
-    //             console.error('Email sending error:', error.text);
-    //             setInfo("Failed to send email");
-    //             setLoading(false);
-    //         });
-    // 
+            const data = await response.json();
+
+            if (data.error) {
+                setInfo(data.message);
+            } else {
+                setInfo("Signup Successful!"); // Optionally handle successful signup
+            }
+        } catch (error) {
+            console.error(error);
+            setInfo("An error occurred during signup");
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -100,6 +111,18 @@ function Signup() {
                             placeholder='Re-enter Password'
                             required
                             value={formData.confirmPassword}
+                            onChange={handleChange}
+                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                        />
+                    </div>
+                    <div>
+                        <label className="block text-gray-700 font-semibold mb-2">Phone Number:</label>
+                        <input
+                            type="text"
+                            name="phone_no"
+                            placeholder='Phone Number'
+                            required
+                            value={formData.phone_no}
                             onChange={handleChange}
                             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                         />

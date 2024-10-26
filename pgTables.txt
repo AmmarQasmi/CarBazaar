@@ -1,0 +1,179 @@
+CREATE TABLE ROLES (
+    role_id SERIAL PRIMARY KEY,
+    role_name VARCHAR(10) NOT NULL
+);
+
+CREATE TABLE USERS (
+    U_id SERIAL PRIMARY KEY,
+    email VARCHAR(100) NOT NULL UNIQUE,
+    name VARCHAR(100) NOT NULL,
+    password VARCHAR(50) NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    profile_pic VARCHAR(100),
+    cover_pic VARCHAR(100),
+    phone_no BIGINT NOT NULL,
+    role_id INT NOT NULL,
+    is_login CHAR(1),
+    CONSTRAINT password_length CHECK (LENGTH(password) BETWEEN 8 AND 50),
+    FOREIGN KEY (role_id) REFERENCES ROLES(role_id)
+);
+
+CREATE TABLE VEHICLE (
+    V_id SERIAL PRIMARY KEY,
+    make VARCHAR(20) NOT NULL,
+    model VARCHAR(20) NOT NULL,
+    year INT NOT NULL CHECK (year > 1885 AND year <= EXTRACT(YEAR FROM CURRENT_DATE)),
+    fuel_type VARCHAR(10) NOT NULL,
+    mileage INT NOT NULL,
+    price NUMERIC NOT NULL,
+    vehicle_image VARCHAR(100) NOT NULL,
+    description VARCHAR(200) NOT NULL,
+    users_u_id INT NOT NULL,
+    FOREIGN KEY (users_u_id) REFERENCES USERS(U_id)
+);
+
+CREATE TABLE AVAIL (
+    users_u_id INT PRIMARY KEY,
+    FOREIGN KEY (users_u_id) REFERENCES USERS(U_id)
+);
+
+CREATE TABLE SERVICE (
+    service_id SERIAL PRIMARY KEY,
+    description VARCHAR(200) NOT NULL,
+    service_type VARCHAR(20) NOT NULL,
+    service_price NUMERIC NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    vehicle_v_id INT NOT NULL,
+    FOREIGN KEY (vehicle_v_id) REFERENCES VEHICLE(V_id) ON DELETE CASCADE
+);
+
+CREATE TABLE SERVICE_AVAILABILITY (
+    users_u_id INT NOT NULL,
+    services_service_id INT NOT NULL,
+    vehicle_v_id INT NOT NULL,
+    PRIMARY KEY (users_u_id, services_service_id, vehicle_v_id),
+    FOREIGN KEY (users_u_id) REFERENCES AVAIL(users_u_id) ON DELETE CASCADE,
+    FOREIGN KEY (services_service_id) REFERENCES SERVICE(service_id) ON DELETE CASCADE,
+    FOREIGN KEY (vehicle_v_id) REFERENCES VEHICLE(V_id) ON DELETE CASCADE
+);
+
+CREATE TABLE INSURANCE_POLICY (
+    policy_number SERIAL PRIMARY KEY,
+    coverage_amount NUMERIC NOT NULL,
+    start_date DATE NOT NULL,
+    end_date DATE NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    services_service_id INT NOT NULL,
+    vehicle_v_id INT NOT NULL,
+    users_u_id INT NOT NULL,
+    FOREIGN KEY (services_service_id) REFERENCES SERVICE(service_id) ON DELETE CASCADE,
+    FOREIGN KEY (vehicle_v_id) REFERENCES VEHICLE(V_id) ON DELETE CASCADE,
+    FOREIGN KEY (users_u_id) REFERENCES USERS(U_id) ON DELETE CASCADE
+);
+
+CREATE TABLE MAINTENANCE (
+    maintenance_id SERIAL PRIMARY KEY,
+    service_date DATE NOT NULL,
+    service_description VARCHAR(200) NOT NULL,
+    cost NUMERIC NOT NULL,
+    service_center VARCHAR(100) NOT NULL,
+    services_service_id INT NOT NULL,
+    vehicle_v_id INT NOT NULL,
+    users_u_id INT NOT NULL,
+    FOREIGN KEY (services_service_id) REFERENCES SERVICE(service_id) ON DELETE CASCADE,
+    FOREIGN KEY (vehicle_v_id) REFERENCES VEHICLE(V_id) ON DELETE CASCADE,
+    FOREIGN KEY (users_u_id) REFERENCES USERS(U_id) ON DELETE CASCADE
+);
+
+CREATE TABLE POST (
+    post_id SERIAL PRIMARY KEY,
+    price NUMERIC NOT NULL,
+    description VARCHAR(200) NOT NULL,
+    seller_id INT NOT NULL,
+    images VARCHAR(100) NOT NULL,
+    users_u_id INT NOT NULL,
+    vehicle_v_id INT NOT NULL,
+    vehicle_users_u_id INT NOT NULL,
+    FOREIGN KEY (users_u_id) REFERENCES USERS(U_id) ON DELETE CASCADE,
+    FOREIGN KEY (vehicle_v_id) 
+        REFERENCES VEHICLE(V_id) ON DELETE CASCADE
+);
+
+CREATE TABLE PURCHASE (
+    p_id SERIAL PRIMARY KEY,
+    purchase_date DATE NOT NULL,
+    purchase_price NUMERIC NOT NULL,
+    payment_status VARCHAR(20) NOT NULL,
+    payment_type VARCHAR(20) NOT NULL,
+    users_u_id INT NOT NULL,
+    post_post_id INT NOT NULL,
+    post_users_u_id INT NOT NULL,
+    FOREIGN KEY (post_post_id) 
+        REFERENCES POST(post_id) ON DELETE CASCADE,
+    FOREIGN KEY (users_u_id) REFERENCES USERS(U_id) ON DELETE CASCADE
+);
+
+
+
+-- Insert roles
+INSERT INTO ROLES (role_name) VALUES 
+('admin'),
+('user');
+
+-- Insert users
+INSERT INTO USERS (email, name, password, profile_pic, cover_pic, phone_no, role_id, is_login) VALUES 
+('admin@example.com', 'Admin User', 'adminPass123', 'admin_profile.jpg', 'admin_cover.jpg', 1234567890, 1, 'Y'),
+('user1@example.com', 'Regular User', 'userPass123', 'user1_profile.jpg', 'user1_cover.jpg', 1234567891, 2, 'N'),
+('user2@example.com', 'Another User', 'userPass123', 'user2_profile.jpg', 'user2_cover.jpg', 1234567892, 2, 'N');
+
+-- Insert vehicles
+INSERT INTO VEHICLE (make, model, year, fuel_type, mileage, price, vehicle_image, description, users_u_id) VALUES 
+('Toyota', 'Camry', 2020, 'Petrol', 15000, 20000, 'toyota_camry.jpg', 'A reliable sedan.', 1),
+('Honda', 'Civic', 2019, 'Petrol', 25000, 18000, 'honda_civic.jpg', 'A sporty compact car.', 2),
+('Ford', 'F-150', 2021, 'Diesel', 10000, 35000, 'ford_f150.jpg', 'A powerful pickup truck.', 3);
+
+-- Insert availability
+INSERT INTO AVAIL (users_u_id) VALUES 
+(1), 
+(2), 
+(3);
+
+-- Insert services
+INSERT INTO SERVICE (description, service_type, service_price, vehicle_v_id) VALUES 
+('Oil Change', 'Maintenance', 50, 1),
+('Tire Rotation', 'Maintenance', 30, 2),
+('Brake Inspection', 'Safety', 70, 3);
+
+-- Insert service availability
+INSERT INTO SERVICE_AVAILABILITY (users_u_id, services_service_id, vehicle_v_id) VALUES 
+(1, 1, 1),
+(2, 2, 2),
+(3, 3, 3);
+
+-- Insert insurance policies
+INSERT INTO INSURANCE_POLICY (coverage_amount, start_date, end_date, services_service_id, vehicle_v_id, users_u_id) VALUES 
+(10000, '2024-01-01', '2025-01-01', 1, 1, 1),
+(20000, '2024-02-01', '2025-02-01', 2, 2, 2),
+(15000, '2024-03-01', '2025-03-01', 3, 3, 3);
+
+-- Insert maintenance records
+INSERT INTO MAINTENANCE (service_date, service_description, cost, service_center, services_service_id, vehicle_v_id, users_u_id) VALUES 
+('2024-01-15', 'Changed oil and filter', 50, 'Quick Lube', 1, 1, 1),
+('2024-02-20', 'Rotated tires', 30, 'Tire World', 2, 2, 2),
+('2024-03-10', 'Inspected brakes', 70, 'Brake Shop', 3, 3, 3);
+
+-- Insert posts
+INSERT INTO POST (price, description, seller_id, images, users_u_id, vehicle_v_id, vehicle_users_u_id) VALUES 
+(22000, '2018 Honda Accord for sale', 1, 'honda_accord.jpg', 1, 1, 1),
+(17000, '2019 Ford Escape available', 2, 'ford_escape.jpg', 2, 2, 2),
+(30000, '2020 Toyota RAV4 for sale', 3, 'toyota_rav4.jpg', 3, 3, 3);
+
+-- Insert purchases
+INSERT INTO PURCHASE (purchase_date, purchase_price, payment_status, payment_type, users_u_id, post_post_id, post_users_u_id) VALUES 
+('2024-01-20', 22000, 'completed', 'credit card', 1, 1, 1),
+('2024-02-25', 17000, 'completed', 'cash', 2, 2, 2),
+('2024-03-15', 30000, 'pending', 'credit card', 3, 3, 3);
+
+
+
+

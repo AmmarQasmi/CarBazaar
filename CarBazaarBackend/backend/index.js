@@ -4,6 +4,8 @@ import morgan from "morgan";
 import errorHandler from "errorhandler";
 import { db } from "./DB/connect.js";
 import purchaseRouter from "./Purchase/purchase.js";
+import SignupRouter from "./Signup/signup.js";
+import LoginRouter from "./Login/login.js";
 const app = express();
 
 const PORT = 5000;
@@ -17,8 +19,9 @@ app.use(errorHandler());
 //imported routes.
 
 
-app.use("/",purchaseRouter); //use the router for functionality
-
+app.use("/",purchaseRouter); //use the purchase router
+app.use("/",SignupRouter); //use the signup router 
+app.use("/", LoginRouter); // Use the login router
 
 
 app.listen(PORT, () => {
