@@ -1,14 +1,45 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 export default function AdminLogin() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const validate = async (e) => {
     e.preventDefault();
-    // Handle login logic here
-    console.log('Login attempted with:', { email, password });
+    setLoading(true);
+    setError(null);
+
+    const formData = new FormData(e.target);
+    const email = formData.get('email');
+    const password = formData.get('password');
+
+    try {
+      const response = await fetch('http://localhost:5000/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setError(data.message);
+      } else {
+        navigate("/adminpage"); 
+      }
+
+    } catch (err) {
+      console.error("Error:", err);
+      setError("An unexpected error occurred");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -19,7 +50,7 @@ export default function AdminLogin() {
             Admin Login
           </h2>
         </div>
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+        <form className="mt-8 space-y-6" onSubmit={validate}>
           <input type="hidden" name="remember" value="true" />
           <div className="rounded-md shadow-sm -space-y-px">
             <div>
@@ -38,6 +69,7 @@ export default function AdminLogin() {
                 onChange={(e) => setEmail(e.target.value)}
               />
             </div>
+            <br />
             <div>
               <label htmlFor="password" className="sr-only">
                 Password
@@ -56,10 +88,14 @@ export default function AdminLogin() {
             </div>
           </div>
 
+          {loading && <p className="text-center text-white">Logging in...</p>}
+          {error && <p className="text-center text-red-500">{error}</p>}
+
           <div>
             <button
               type="submit"
               className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+              disabled={loading} // Disable button while loading
             >
               Sign in as Admin
             </button>

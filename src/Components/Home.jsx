@@ -1,9 +1,7 @@
-import React from 'react'
-import { NavLink, Link } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
+import { NavLink } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowRight, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
-
 
 function Home() {
     const images = [
@@ -35,20 +33,16 @@ function Home() {
         <>
             <section className="relative text-center m-0 p-0 w-screen h-screen overflow-hidden">
                 {/* Carousel container */}
-                <div className="absolute inset-0 h-screen w-screen">
+                <div className="absolute inset-0 w-full h-full">
                     {/* Images for the carousel */}
-                    <div className="absolute inset-0 h-screen w-screen bg-cover bg-center transition-opacity duration-1000">
-                        {images.map((image, index) => (
-                            <img
-                                key={index}
-                                src={image}
-                                alt={`Car ${index + 1}`}
-                                className={`w-full h-full object-contain ${index === currentImage ? "block" : "hidden"}`}
-                                style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, filter: 'blur(0px)', objectFit: 'cover' }}
-                            />
-                        ))}
-                    </div>
-
+                    {images.map((image, index) => (
+                        <img
+                            key={index}
+                            src={image}
+                            alt={`Car ${index + 1}`}
+                            className={`w-full h-full object-cover ${index === currentImage ? "block" : "hidden"}`}
+                        />
+                    ))}
                     {/* Arrows for navigation */}
                     <button
                         onClick={goToPrevious}
@@ -84,122 +78,105 @@ function Home() {
                 </div>
             </section>
 
-            <section className="bg-gray-50 py-16 scrollEffect">
+            {/* Marketplace Section */}
+            <section className="bg-gray-50 py-16">
                 <div className="max-w-7xl mx-auto text-center px-4 sm:px-6 lg:px-8">
-                    <h2 className="text-3xl font-extrabold text-gray-800 mb-4">
+                    <h2 className="text-3xl font-extrabold text-gray-800 mb-4 scrollEffect">
                         Explore Our Car Marketplace
                     </h2>
-                    <p className="text-lg text-gray-600 mb-10">
+                    <p className="text-lg text-gray-600 mb-10 scrollEffect">
                         Find the perfect car, explore financing options, or list your own car for sale. Your next vehicle is just a click away!
                     </p>
 
-                    <div className="container mx-auto px-4 py-10">
-                        <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-
-                            {/* Browse Cars */}
-                            <div className="bg-white shadow-lg rounded-lg p-6 hover:shadow-xl transition-transform duration-300 hover:scale-105 cursor-pointer">
+                    <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 mx-auto">
+                        {/* Repeated card component structure */}
+                        {[{
+                            title: "Browse Cars",
+                            description: "Check out a variety of cars available for sale, from sedans to SUVs.",
+                            link: '/Browse',
+                            imgSrc: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR_4up10-uN0hkNUe5oc8zabEAaNHjtk_pTcw&s",
+                        },
+                        {
+                            title: "Search for Cars",
+                            description: "Use our advanced search to find cars that match your exact criteria.",
+                            link: '/AdvanceSearch',
+                            imgSrc: "https://img.freepik.com/premium-vector/car-search-logo_8168-62.jpg",
+                        },
+                        {
+                            title: "Finance Options",
+                            description: "Explore flexible finance options to fit your budget and get the car you need.",
+                            link: '/FinanceOption',
+                            imgSrc: "https://media.istockphoto.com/id/1423550966/vector/profit-rounded-lines-icon.jpg?s=612x612&w=0&k=20&c=_KFEK2PUIlquKGVUYQ18I2rO6xQ3ieFDEx-xHpXRLTI=",
+                        }].map((item, index) => (
+                            <div key={index} className="bg-white shadow-lg rounded-lg p-6 hover:shadow-xl transition-transform duration-300 hover:scale-105 cursor-pointer scrollEffect">
                                 <img
-                                    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR_4up10-uN0hkNUe5oc8zabEAaNHjtk_pTcw&s"
-                                    alt="Browse image"
-                                    className="w-full h-auto object-contain rounded-md"  // Change here
+                                    src={item.imgSrc}
+                                    alt={item.title}
+                                    className="w-full h-48 object-cover rounded-md"
                                 />
-                                <h3 className="text-xl font-semibold text-gray-800 mt-4 mb-2">Browse Cars</h3>
-                                <p className="text-gray-600 mb-4">Check out a variety of cars available for sale, from sedans to SUVs.</p>
-                                <NavLink to='/Browse' className="mt-4 px-6 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors">
+                                <h3 className="text-xl font-semibold text-gray-800 mt-4 mb-2">{item.title}</h3>
+                                <p className="text-gray-600 mb-4">{item.description}</p>
+                                <NavLink to={item.link} className="mt-4 px-6 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors">
                                     View Cars
                                 </NavLink>
                             </div>
-
-                            {/* Search for Cars */}
-                            <div className="bg-white shadow-lg rounded-lg p-6 hover:shadow-xl transition-transform duration-300 hover:scale-105 cursor-pointer">
-                                <img
-                                    src="https://img.freepik.com/premium-vector/car-search-logo_8168-62.jpg"
-                                    alt="Search Image"
-                                    className="w-full h-auto object-contain rounded-md"  // Change here
-                                />
-                                <h3 className="text-xl font-semibold text-gray-800 mt-4 mb-2">Search for Cars</h3>
-                                <p className="text-gray-600 mb-4">Use our advanced search to find cars that match your exact criteria.</p>
-                                <NavLink to='/AdvanceSearch' className="mt-4 px-6 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors">
-                                    Search Cars
-                                </NavLink>
-                            </div>
-
-                            {/* Finance Options */}
-                            <div className="bg-white shadow-lg rounded-lg p-6 hover:shadow-xl transition-transform duration-300 hover:scale-105 cursor-pointer">
-                                <img
-                                    src="https://media.istockphoto.com/id/1423550966/vector/profit-rounded-lines-icon.jpg?s=612x612&w=0&k=20&c=_KFEK2PUIlquKGVUYQ18I2rO6xQ3ieFDEx-xHpXRLTI="
-                                    alt="Paisa"
-                                    className="w-full h-auto object-contain rounded-md"  // Change here
-                                />
-                                <h3 className="text-xl font-semibold text-gray-800 mt-4 mb-2">Finance Options</h3>
-                                <p className="text-gray-600 mb-4">Explore flexible finance options to fit your budget and get the car you need.</p>
-                                <NavLink to='/FinanceOption' className="mt-4 px-6 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors">
-                                    Explore Finance
-                                </NavLink>
-                            </div>
-
-                        </div>
+                        ))}
                     </div>
-
                 </div>
             </section>
 
-            <section className="bg-gray-100 py-12 scrollEffect">
+            {/* Community Section */}
+            <section className="bg-gray-100 py-12">
                 <div className="max-w-4xl mx-auto text-center p-8">
-                    <h2 className="text-3xl font-extrabold text-gray-800 mb-4">
+                    <h2 className="text-3xl font-extrabold text-gray-800 mb-4 scrollEffect">
                         Join CarBazaar Community
                     </h2>
-                    <p className="text-lg text-gray-600 mb-10">
+                    <p className="text-lg text-gray-600 mb-10 scrollEffect">
                         Be a part of our Family by Joining our Community
                     </p>
 
                     <div className="grid grid-cols-1 sm:grid-cols-1 gap-8">
-
-                        <div className="bg-white shadow-lg rounded-lg p-6 hover:shadow-xl transition-transform duration-300 hover:scale-105 cursor-pointer flex flex-col sm:flex-row items-center">
-                            <div className="sm:w-2/3 text-left">
-                                <h3 className="text-xl font-semibold text-gray-800 mb-4">As a Seller</h3>
-                                <p className="text-gray-600 mb-6">Sell Cars and connect with buyers effortlessly.</p>
-                                <NavLink
-                                    to='/seller'
-                                    className="mt-4 px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">
-                                    Post the car
-                                </NavLink>
+                        {[{
+                            title: "As a Seller",
+                            description: "Sell Cars and connect with buyers effortlessly.",
+                            link: '/seller',
+                            imgSrc: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTAfWDNKGyGLeMBOSLGsw7ngqSYwe5pTuBHQg&s",
+                        },
+                        {
+                            title: "As a Partner",
+                            description: "Partner with CarBazaar to reach more car enthusiasts.",
+                            link: '/partner',
+                            imgSrc: "https://cdn.vectorstock.com/i/500p/86/64/hand-shake-business-partner-agreement-icon-vector-26458664.jpg",
+                        },
+                        {
+                            title: "As a Team",
+                            description: "Join us in revolutionizing the car industry.",
+                            link: '/join',
+                            imgSrc: "https://www.businessmanager.in/wp-content/uploads/2022/04/Effective-Team-Work.jpg",
+                        }].map((item, index) => (
+                            <div key={index} className="bg-white shadow-lg rounded-lg p-6 hover:shadow-xl transition-transform duration-300 hover:scale-105 cursor-pointer flex flex-col sm:flex-row items-center scrollEffect">
+                                <div className="sm:w-2/3 text-left">
+                                    <h3 className="text-xl font-semibold text-gray-800 mb-4">{item.title}</h3>
+                                    <p className="text-gray-600 mb-6">{item.description}</p>
+                                    <NavLink
+                                        to={item.link}
+                                        className="mt-4 px-6 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
+                                    >
+                                        Join Us
+                                    </NavLink>
+                                </div>
+                                <img
+                                    src={item.imgSrc}
+                                    alt={item.title}
+                                    className="sm:w-1/3 h-32 object-cover rounded-md sm:ml-4 mt-4 sm:mt-0"
+                                />
                             </div>
-                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTAfWDNKGyGLeMBOSLGsw7ngqSYwe5pTuBHQg&s" alt="Browse image" className="sm:w-1/3 w-full object-cover rounded-lg sm:ml-6 mt-4 sm:mt-0" />
-                        </div>
-
-                        <div className="bg-white shadow-lg rounded-lg p-6 hover:shadow-xl transition-transform duration-300 hover:scale-105 cursor-pointer flex flex-col sm:flex-row items-center">
-                            <div className="sm:w-2/3 text-left">
-                                <h3 className="text-xl font-semibold text-gray-800 mb-4">As a Partner</h3>
-                                <p className="text-gray-600 mb-6">Partner with CarBazaar to reach more car enthusiasts.</p>
-                                <NavLink
-                                    to='/partner'
-                                    className="mt-4 px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">
-                                    Partner with us
-                                </NavLink>
-                            </div>
-                            <img src="https://cdn.vectorstock.com/i/500p/86/64/hand-shake-business-partner-agreement-icon-vector-26458664.jpg" alt="Partner" className="sm:w-1/3 w-full object-cover rounded-lg sm:ml-6 mt-4 sm:mt-0" />
-                        </div>
-
-                        <div className="bg-white shadow-lg rounded-lg p-6 hover:shadow-xl transition-transform duration-300 hover:scale-105 cursor-pointer flex flex-col sm:flex-row items-center">
-                            <div className="sm:w-2/3 text-left">
-                                <h3 className="text-xl font-semibold text-gray-800 mb-4">As a Team</h3>
-                                <p className="text-gray-600 mb-6">Join us in revolutionizing the car industry.</p>
-                                <NavLink
-                                    to='/join'
-                                    className="mt-4 px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">
-                                    Join our team
-                                </NavLink>
-                            </div>
-                            <img src="https://www.businessmanager.in/wp-content/uploads/2022/04/Effective-Team-Work.jpg " alt="Team" className="sm:w-1/3 w-full object-cover rounded-lg sm:ml-6 mt-4 sm:mt-0" />
-                        </div>
+                        ))}
                     </div>
                 </div>
             </section>
-
         </>
-
-    )
+    );
 }
 
-export default Home
+export default Home;
