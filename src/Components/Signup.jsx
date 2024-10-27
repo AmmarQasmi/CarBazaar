@@ -5,11 +5,11 @@ function Signup() {
     const [info, setInfo] = useState("");
     const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState({
-        username: '',  // This will be used as 'name' in the backend
+        username: '',
         email: '',
         password: '',
         confirmPassword: '',
-        phone_no: ''  // Add this field for phone number
+        phone_no: ''
     });
 
     const handleChange = (e) => {
@@ -33,16 +33,16 @@ function Signup() {
         setLoading(true);
 
         try {
-            const response = await fetch('http://localhost:5000/signup', { // Adjust the endpoint URL accordingly
+            const response = await fetch('http://localhost:5000/signup', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
                     email: formData.email,
-                    name: formData.username, // Sending username as name
+                    name: formData.username,
                     password: formData.password,
-                    phone_no: formData.phone_no // Include phone number
+                    phone_no: formData.phone_no
                 }),
             });
 
@@ -51,7 +51,7 @@ function Signup() {
             if (data.error) {
                 setInfo(data.message);
             } else {
-                setInfo("Signup Successful!"); // Optionally handle successful signup
+                setInfo("Signup Successful!");
             }
         } catch (error) {
             console.error(error);
@@ -62,13 +62,13 @@ function Signup() {
     };
 
     return (
-        <div className="mt-20 sm:mt-8 md:mt-8 lg:mt-2 xl:mt-2 min-h-screen flex items-center justify-center bg-gray-100 px-4 py-6">
-            <div className="w-full max-w-md bg-white shadow-lg rounded-lg p-8 mt-12">
-                <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">New to CarBazaar?</h2>
-                <p className="text-lg text-center text-gray-600 mb-4">Please sign up to continue</p>
+        <div className="mt-20 sm:mt-8 md:mt-8 lg:mt-2 xl:mt-2 min-h-screen flex items-center justify-center bg-gray-900 px-4 py-6">
+            <div className="w-full max-w-md bg-black shadow-lg rounded-lg p-8 mt-12 border border-red-600">
+                <h2 className="text-2xl font-bold mb-6 text-center text-red-500">New to CarBazaar?</h2>
+                <p className="text-lg text-center text-gray-400 mb-4">Please sign up to continue</p>
                 <form onSubmit={validate} className="space-y-4">
                     <div>
-                        <label className="block text-gray-700 font-semibold mb-2">Username:</label>
+                        <label className="block text-gray-300 font-semibold mb-2">Username:</label>
                         <input
                             type="text"
                             name="username"
@@ -76,11 +76,11 @@ function Signup() {
                             required
                             value={formData.username}
                             onChange={handleChange}
-                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 text-white placeholder-gray-500"
                         />
                     </div>
                     <div>
-                        <label className="block text-gray-700 font-semibold mb-2">Email:</label>
+                        <label className="block text-gray-300 font-semibold mb-2">Email:</label>
                         <input
                             type="email"
                             name="email"
@@ -88,11 +88,11 @@ function Signup() {
                             required
                             value={formData.email}
                             onChange={handleChange}
-                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 text-white placeholder-gray-500"
                         />
                     </div>
                     <div>
-                        <label className="block text-gray-700 font-semibold mb-2">Password:</label>
+                        <label className="block text-gray-300 font-semibold mb-2">Password:</label>
                         <input
                             type="password"
                             name="password"
@@ -100,11 +100,11 @@ function Signup() {
                             required
                             value={formData.password}
                             onChange={handleChange}
-                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 text-white placeholder-gray-500"
                         />
                     </div>
                     <div>
-                        <label className="block text-gray-700 font-semibold mb-2">Confirm Password:</label>
+                        <label className="block text-gray-300 font-semibold mb-2">Confirm Password:</label>
                         <input
                             type="password"
                             name="confirmPassword"
@@ -112,11 +112,11 @@ function Signup() {
                             required
                             value={formData.confirmPassword}
                             onChange={handleChange}
-                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 text-white placeholder-gray-500"
                         />
                     </div>
                     <div>
-                        <label className="block text-gray-700 font-semibold mb-2">Phone Number:</label>
+                        <label className="block text-gray-300 font-semibold mb-2">Phone Number:</label>
                         <input
                             type="text"
                             name="phone_no"
@@ -124,14 +124,14 @@ function Signup() {
                             required
                             value={formData.phone_no}
                             onChange={handleChange}
-                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 text-white placeholder-gray-500"
                         />
                     </div>
                     <div className="flex justify-center">
                         <button
                             type='submit'
                             disabled={loading}
-                            className="w-full bg-indigo-500 text-white py-2 px-4 rounded-lg font-semibold hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            className="w-full bg-red-600 text-white py-2 px-4 rounded-lg font-semibold hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 transition duration-300 ease-in-out"
                         >
                             {loading ? 'Registering...' : 'Register'}
                         </button>
@@ -140,12 +140,12 @@ function Signup() {
                 <div className="mt-4 text-center">
                     <Link
                         to="/Login"
-                        className="text-indigo-600 hover:text-indigo-800 font-semibold"
+                        className="text-red-500 hover:text-red-400 font-semibold transition duration-300 ease-in-out"
                     >
                         Already have an account? Log in
                     </Link>
                 </div>
-                {info && <h3 className="mt-4 text-center text-red-600">{info}</h3>}
+                {info && <h3 className="mt-4 text-center text-red-500">{info}</h3>}
             </div>
         </div>
     );

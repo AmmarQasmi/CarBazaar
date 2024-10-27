@@ -115,13 +115,6 @@ function Header() {
                                             >
                                                 Insurance Options
                                             </NavLink>
-                                            <NavLink
-                                                to="/seller"
-                                                className="block px-4 py-2 text-sm hover:bg-red-500 text-gray-300"
-                                                onClick={() => setServicesDropdownOpen(false)}
-                                            >
-                                                Sell the Car
-                                            </NavLink>
                                         </div>
                                     )}
                                 </div>

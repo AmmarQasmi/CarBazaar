@@ -6,11 +6,10 @@ import { faArrowRight, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 
 
 function Home() {
-
     const images = [
-        "https://live.staticflickr.com/4348/36326314265_3e7a4652b9_b.jpg",
-        "https://images.pexels.com/photos/39501/lamborghini-brno-racing-car-automobiles-39501.jpeg?cs=srgb&dl=pexels-pixabay-39501.jpg&fm=jpg",
-        "https://wallpapers.com/images/hd/1920-x-1080-car-aay5ru9j8iazqofr.jpg",
+        "https://wallpapers.com/images/hd/black-car-4k-a6ay51d8d0pyex23.jpg",
+        "https://images.unsplash.com/photo-1696524147929-56f1e4a05caf?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTR8fGRhcmslMjBjYXJ8ZW58MHx8MHx8fDA%3D",
+        "https://wallpapers.com/images/hd/black-jeep-pictures-3ff6nh7fjs9tsd46.jpg",
     ];
 
     const [currentImage, setCurrentImage] = useState(0);
@@ -32,7 +31,6 @@ function Home() {
         setCurrentImage((prevImage) => (prevImage + 1) % images.length);
     };
 
-    
     return (
         <>
             <section className="relative text-center m-0 p-0 w-screen h-screen overflow-hidden">
@@ -45,8 +43,8 @@ function Home() {
                                 key={index}
                                 src={image}
                                 alt={`Car ${index + 1}`}
-                                className={`w-full h-full object-cover ${index === currentImage ? "block" : "hidden"}`}
-                                style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, filter: 'blur(2px)', objectFit:'cover' }}
+                                className={`w-full h-full object-contain ${index === currentImage ? "block" : "hidden"}`}
+                                style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, filter: 'blur(0px)', objectFit: 'cover' }}
                             />
                         ))}
                     </div>
@@ -87,7 +85,7 @@ function Home() {
             </section>
 
             <section className="bg-gray-50 py-16 scrollEffect">
-                <div className="max-w-4xl mx-auto text-center p-8">
+                <div className="max-w-7xl mx-auto text-center px-4 sm:px-6 lg:px-8">
                     <h2 className="text-3xl font-extrabold text-gray-800 mb-4">
                         Explore Our Car Marketplace
                     </h2>
@@ -103,7 +101,7 @@ function Home() {
                                 <img
                                     src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR_4up10-uN0hkNUe5oc8zabEAaNHjtk_pTcw&s"
                                     alt="Browse image"
-                                    className="w-full h-40 object-cover rounded-md"
+                                    className="w-full h-auto object-contain rounded-md"  // Change here
                                 />
                                 <h3 className="text-xl font-semibold text-gray-800 mt-4 mb-2">Browse Cars</h3>
                                 <p className="text-gray-600 mb-4">Check out a variety of cars available for sale, from sedans to SUVs.</p>
@@ -117,7 +115,7 @@ function Home() {
                                 <img
                                     src="https://img.freepik.com/premium-vector/car-search-logo_8168-62.jpg"
                                     alt="Search Image"
-                                    className="w-full h-40 object-cover rounded-md"
+                                    className="w-full h-auto object-contain rounded-md"  // Change here
                                 />
                                 <h3 className="text-xl font-semibold text-gray-800 mt-4 mb-2">Search for Cars</h3>
                                 <p className="text-gray-600 mb-4">Use our advanced search to find cars that match your exact criteria.</p>
@@ -131,7 +129,7 @@ function Home() {
                                 <img
                                     src="https://media.istockphoto.com/id/1423550966/vector/profit-rounded-lines-icon.jpg?s=612x612&w=0&k=20&c=_KFEK2PUIlquKGVUYQ18I2rO6xQ3ieFDEx-xHpXRLTI="
                                     alt="Paisa"
-                                    className="w-full h-40 object-cover rounded-md"
+                                    className="w-full h-auto object-contain rounded-md"  // Change here
                                 />
                                 <h3 className="text-xl font-semibold text-gray-800 mt-4 mb-2">Finance Options</h3>
                                 <p className="text-gray-600 mb-4">Explore flexible finance options to fit your budget and get the car you need.</p>
@@ -144,7 +142,7 @@ function Home() {
                     </div>
 
                 </div>
-            </section >
+            </section>
 
             <section className="bg-gray-100 py-12 scrollEffect">
                 <div className="max-w-4xl mx-auto text-center p-8">

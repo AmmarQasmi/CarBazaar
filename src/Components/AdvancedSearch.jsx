@@ -7,20 +7,19 @@ const allCars = [
 ];
 
 const AdvancedSearch = () => {
-  const [maxPrice, setMaxPrice] = useState(30000); // Set the initial max price
-  const [filteredCars, setFilteredCars] = useState(allCars); // Initially display all cars
+  const [maxPrice, setMaxPrice] = useState(30000);
+  const [filteredCars, setFilteredCars] = useState(allCars);
 
   const handlePriceChange = (event) => {
     const newPrice = parseInt(event.target.value, 10);
     setMaxPrice(newPrice);
-    // Filter cars based on the selected max price
     const filtered = allCars.filter(car => car.price <= newPrice);
     setFilteredCars(filtered);
   };
 
   return (
-    <div className="p-6 bg-gray-100 rounded-lg shadow-md">
-      <h2 className="text-2xl font-semibold mb-4 text-center pt-4">Select Price Range</h2>
+    <div className="p-6 bg-gray-800 rounded-lg shadow-md">
+      <h2 className="text-2xl font-semibold mb-4 text-center pt-4 text-red-500">Select Price Range</h2>
 
       <input
         type="range"
@@ -29,9 +28,9 @@ const AdvancedSearch = () => {
         step="1000"
         value={maxPrice}
         onChange={handlePriceChange}
-        className="w-full h-2 bg-blue-200 rounded-lg appearance-none cursor-pointer transition-colors duration-300"
+        className="w-full h-2 bg-red-200 rounded-lg appearance-none cursor-pointer transition-colors duration-300"
       />
-      <div className="flex justify-between mt-2">
+      <div className="flex justify-between mt-2 text-gray-300">
         <span>$10,000</span>
         <span>${maxPrice}</span>
       </div>
@@ -39,16 +38,16 @@ const AdvancedSearch = () => {
       <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
         {filteredCars.length > 0 ? (
           filteredCars.map(car => (
-            <div key={car.id} className="car-card transform transition-transform duration-300 hover:scale-105 bg-white rounded-lg shadow-lg p-4">
-              <img src={car.img} alt={`${car.make} ${car.model}`} className="rounded-md mb-2" />
-              <h3 className="text-lg font-bold">{car.make} {car.model}</h3>
-              <p className="text-sm text-gray-500">Variant: {car.variant}</p>
-              <p className="text-sm text-gray-500">Year: {car.year}</p>
-              <p className="text-lg font-semibold text-blue-600">Price: ${car.price}</p>
+            <div key={car.id} className="car-card transform transition-transform duration-300 hover:scale-105 bg-gray-900 rounded-lg shadow-lg p-4 border border-red-500">
+              <img src={car.img} alt={`${car.make} ${car.model}`} className="rounded-md mb-2 w-full h-48 object-cover" />
+              <h3 className="text-lg font-bold text-white">{car.make} {car.model}</h3>
+              <p className="text-sm text-gray-400">Variant: {car.variant}</p>
+              <p className="text-sm text-gray-400">Year: {car.year}</p>
+              <p className="text-lg font-semibold text-red-500">Price: ${car.price}</p>
             </div>
           ))
         ) : (
-          <p className="col-span-full text-center text-gray-600">No cars available in this price range.</p>
+          <p className="col-span-full text-center text-gray-400">No cars available in this price range.</p>
         )}
       </div>
     </div>

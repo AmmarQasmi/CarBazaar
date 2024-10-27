@@ -24,135 +24,160 @@ function SellWithUs() {
         formData.append('model', model);
         formData.append('variant', variant);
         formData.append('seller_id', sellerId); 
+        // Handle form submission logic here
     };
 
     return (
-        <>
-            <section className='mt-20 flex items-center bg-gray-300'>
-                <div className="bg-white text-black p-8 rounded-lg shadow-md w-full h-full ">
-                    <h2 className="text-2xl font-bold mb-6 text-center">Sell the car? You are at the right place</h2>
-                    <form className="space-y-4" onSubmit={handleSubmit}>
-                        <div>
-                            <h5 className="text-md font-bold mb-6 text-left underline">Car Details</h5>
-
+        <div className="min-h-screen bg-gray-900 text-white">
+            <section className='pt-20 pb-10 px-4 sm:px-6 lg:px-8'>
+                <div className="max-w-4xl mx-auto bg-gradient-to-br from-gray-800 to-gray-700 rounded-lg shadow-2xl overflow-hidden">
+                    <div className="p-8">
+                        <h2 className="text-3xl font-bold mb-6 text-center text-red-500">Sell Your Car with Us</h2>
+                        <form className="space-y-6" onSubmit={handleSubmit}>
                             <div>
-                                <label className="block text-sm font-medium mb-3" htmlFor="make">
-                                    Make
+                                <h5 className="text-xl font-bold mb-4 text-left border-b border-red-500 pb-2">Car Details</h5>
+
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    <div>
+                                        <label className="block text-sm font-medium mb-2" htmlFor="make">
+                                            Make
+                                        </label>
+                                        <input
+                                            id="make"
+                                            value={make}
+                                            onChange={(e) => setMake(e.target.value)}
+                                            placeholder='Enter Company Name'
+                                            className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 text-white placeholder-gray-400"
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <label className="block text-sm font-medium mb-2" htmlFor="model">
+                                            Model
+                                        </label>
+                                        <input
+                                            id="model"
+                                            value={model}
+                                            onChange={(e) => setModel(e.target.value)}
+                                            placeholder='Enter Specific Model'
+                                            className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 text-white placeholder-gray-400"
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className="mt-4">
+                                    <label className="block text-sm font-medium mb-2" htmlFor="variant">
+                                        Variant
+                                    </label>
+                                    <select
+                                        id="variant"
+                                        value={variant}
+                                        onChange={(e) => setVariant(e.target.value)}
+                                        className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 text-white"
+                                    >
+                                        <option value="" disabled>Select Variant</option>
+                                        <option value="base">Base</option>
+                                        <option value="sport">Sport</option>
+                                        <option value="luxury">Luxury</option>
+                                        <option value="hybrid">Hybrid</option>
+                                        <option value="electric">Electric</option>
+                                    </select>
+                                </div>
+
+                                <div className="mt-4">
+                                    <label className="block text-sm font-medium mb-2" htmlFor="images">
+                                        Upload Car Photos
+                                    </label>
+                                    <input
+                                        type='file'
+                                        id='images'
+                                        className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 text-white file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-red-50 file:text-red-700 hover:file:bg-red-100"
+                                        accept="image/*"
+                                        onChange={handleImageChange}
+                                        multiple
+                                    />
+                                </div>
+                            </div>
+
+                            <h5 className="text-xl font-bold mb-4 text-left border-b border-red-500 pb-2">Post Details</h5>
+                            <div>
+                                <label className="block text-sm font-medium mb-2" htmlFor="description">
+                                    Description:
+                                </label>
+                                <textarea
+                                    id="description"
+                                    value={description}
+                                    onChange={(e) => setDescription(e.target.value)}
+                                    className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 text-white placeholder-gray-400"
+                                    placeholder="Enter car description"
+                                    rows="4"
+                                />
+                            </div>
+                            
+                            <div>
+                                <label className="block text-sm font-medium mb-2" htmlFor="price">
+                                    Price:
                                 </label>
                                 <input
-                                    id="make"
-                                    value={make}
-                                    onChange={(e) => setMake(e.target.value)}
-                                    placeholder='Enter Company Name'
-                                    className="w-full mb-5 px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                    type="number"
+                                    id="price"
+                                    value={price}
+                                    onChange={(e) => setPrice(e.target.value)}
+                                    className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 text-white placeholder-gray-400"
+                                    placeholder="Enter price"
                                 />
                             </div>
 
-                            <div>
-                                <label className="block text-sm font-medium mb-3" htmlFor="model">
-                                    Model
-                                </label>
-                                <input
-                                    id="model"
-                                    value={model}
-                                    onChange={(e) => setModel(e.target.value)}
-                                    placeholder='Enter Specific Model'
-                                    className="w-full mb-5 px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                                />
-                            </div>
-
-                            <div>
-                                <label className="block text-sm font-medium mb-3" htmlFor="variant">
-                                    Variant
-                                </label>
-                                <select
-                                    id="variant"
-                                    value={variant}
-                                    onChange={(e) => setVariant(e.target.value)}
-                                    className="w-full mb-5 px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                                >
-                                    <option value="" disabled>Select Variant</option>
-                                    <option value="base">Base</option>
-                                    <option value="sport">Sport</option>
-                                    <option value="luxury">Luxury</option>
-                                    <option value="hybrid">Hybrid</option>
-                                    <option value="electric">Electric</option>
-                                </select>
-                            </div>
-
-                            <div>
-                                <label className="block text-sm font-medium mb-1" htmlFor="images">
-                                    Upload Car Photos
-                                </label>
-                                <input
-                                    type='file'
-                                    id='images'
-                                    className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                                    accept="image/*"
-                                    onChange={handleImageChange}
-                                    multiple
-                                />
-                            </div>
-                            <br /> <hr />
-                        </div>
-
-                        <h5 className="text-md font-bold mb-6 text-left underline">Post Details</h5>
-                        <label className="block text-sm font-medium mb-1" htmlFor="description">
-                            Description:
-                        </label>
-                        <textarea
-                            id="description"
-                            value={description}
-                            onChange={(e) => setDescription(e.target.value)}
-                            className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                            placeholder="Enter car description"
-                        />
-                        
-                        <label className="block text-sm font-medium mb-1" htmlFor="price">
-                            Price:
-                        </label>
-                        <input
-                            type="number"
-                            id="price"
-                            value={price}
-                            onChange={(e) => setPrice(e.target.value)}
-                            className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                            placeholder="Enter price"
-                        />
-
-                        <button
-                            type="submit"
-                            className="w-full bg-black text-white py-2 rounded-md hover:bg-gray-800 transition-colors"
-                        >
-                            Publish Ad
-                        </button>
-                        <div className="mt-8 flex justify-between text-gray-600">
-                            <p className="text-left">
-                                © 2024 CarBazaar. All rights reserved.
-                            </p>
-                            <NavLink to="/Contact" className="text-right cursor-pointer hover:underline">
-                                Contact us
-                            </NavLink>
-                        </div>
-                    </form>
+                            <button
+                                type="submit"
+                                className="w-full bg-red-600 text-white py-3 rounded-md hover:bg-red-700 transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50"
+                            >
+                                Publish Ad
+                            </button>
+                        </form>
+                    </div>
+                    <div className="bg-gray-800 p-6 flex justify-between items-center text-sm">
+                        <p className="text-gray-400">
+                            © 2024 CarBazaar. All rights reserved.
+                        </p>
+                        <NavLink to="/Contact" className="text-red-400 hover:text-red-300 transition-colors">
+                            Contact us
+                        </NavLink>
+                    </div>
                 </div>
             </section>
-            <br /> <br /> <br /><br />
-            <section className='relative p-8 '>
-                <div className="absolute right-4 bottom-4 flex flex-col space-y-4">
+            
+            <section className='relative p-8'>
+                <div className="md:fixed right-4 bottom-4 flex flex-col space-y-4 md:flex md:flex-col md:space-y-4 hidden md:block">
                     <NavLink
                         to='/join'
-                        className="px-6 py-2 bg-black text-white rounded-lg hover:bg-gray-500 transition-colors">
+                        className="px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50">
                         Join us Instead?
                     </NavLink>
                     <NavLink
                         to='/partner'
-                        className="px-6 py-2 bg-black text-white rounded-lg hover:bg-gray-500 transition-colors">
+                        className="px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50">
                         Partner with us Instead?
                     </NavLink>
                 </div>
             </section>
-        </>
+
+            {/* Buttons for smaller screens (non-fixed) */}
+            <section className="block md:hidden text-center mt-6 space-y-4">
+                <NavLink
+                    to='/join'
+                    className="w-full block bg-red-600 text-white py-3 rounded-lg hover:bg-red-700 transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50"
+                >
+                    Join us Instead?
+                </NavLink>
+                <NavLink
+                    to='/partner'
+                    className="w-full block bg-red-600 text-white py-3 rounded-lg hover:bg-red-700 transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50"
+                >
+                    Partner with us Instead?
+                </NavLink>
+            </section>
+        </div>
     );
 }
 
