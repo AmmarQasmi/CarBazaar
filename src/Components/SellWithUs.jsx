@@ -148,7 +148,7 @@ function SellWithUs() {
             </section>
             
             <section className='relative p-8'>
-                <div className="md:fixed right-4 bottom-4 flex flex-col space-y-4 md:flex md:flex-col md:space-y-4 hidden md:block">
+                <div className="md:fixed right-4 bottom-4 flex-col space-y-4 md:flex md:flex-col md:space-y-4 hidden">
                     <NavLink
                         to='/join'
                         className="px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50">
