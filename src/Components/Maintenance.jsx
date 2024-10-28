@@ -27,7 +27,7 @@ function Maintenance() {
     };
 
     return (
-        <div className="relative min-h-screen bg-gradient-to-r from-gray-900 via-gray-800 to-gray-700 overflow-hidden">
+        <div className="relative min-h-screen bg-gradient-to-r from-gray-900 via-gray-800 to-gray-700 overflow-hidden ">
             <div
                 className="absolute inset-0 bg-cover bg-center"
                 style={{
@@ -51,7 +51,7 @@ function Maintenance() {
                 <FontAwesomeIcon icon={faArrowRight} />
             </button>
 
-            <div className="bg-gray-900 p-6 sm:p-8 md:p-10 rounded-lg shadow-xl w-full max-w-2xl mx-auto relative z-20 mt-10 sm:mt-16 md:mt-20 lg:mt-24 xl:mt-32">
+            <div className="bg-gray-900 p-6 sm:p-8 md:p-10 rounded-lg shadow-xl w-full max-w-2xl mx-auto relative z-20 mt-10 sm:mt-10 md:mt-20 lg:mt-24 lg:mb-20 xl:mt-20 xl:mb-10 ">
                 <h1 className="text-3xl sm:text-4xl font-bold mb-6 sm:mb-8 text-center text-red-500">Car Maintenance Request</h1>
 
                 <form className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">

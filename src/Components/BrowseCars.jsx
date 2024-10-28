@@ -30,7 +30,7 @@ const BrowseCar = () => {
   }
 
   return (
-    <div className="p-6 bg-gray-900 rounded-lg shadow-md">
+    <div className="p-6 bg-gray-900 rounded-lg shadow-md pt-20 pb-20">
       <h2 className="text-2xl font-semibold mb-4 text-red-500">Browse Cars</h2>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">

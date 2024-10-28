@@ -3,8 +3,8 @@ import { Link } from 'react-router-dom';
 
 function Footer() {
     return (
-        <footer className="bg-gradient-to-b from-gray-900 to-red-800 text-white py-4 w-full relative group">
-            <div className="px-4 mx-auto">
+        <div className="bg-gradient-to-b from-gray-900 to-red-800 text-white py-4 w-full relative group">
+            <div className="px-10 mx-auto">
                 <div className="flex flex-wrap justify-between items-center">
                     {/* Logo */}
                     <div className="mb-2 w-full md:w-auto flex items-center">
@@ -97,11 +97,12 @@ function Footer() {
                     </div>
                 </div>
                 {/* Copyright */}
-                <div className="mt-4 text-center text-gray-300">
+                <div className="mt-4 text-left text-gray-300">
+                    <hr />
                     © 2024 CarBazaar. All rights reserved.
                 </div>
             </div>
-        </footer>
+        </div>
     );
 }
 

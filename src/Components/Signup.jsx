@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 function Signup() {
     const [info, setInfo] = useState("");
     const [loading, setLoading] = useState(false);
+    const [showToast, setShowToast] = useState(false); // State for showing toast
     const [formData, setFormData] = useState({
         username: '',
         email: '',
@@ -52,6 +53,8 @@ function Signup() {
                 setInfo(data.message);
             } else {
                 setInfo("Signup Successful!");
+                setShowToast(true); // Show the toast notification
+                setTimeout(() => setShowToast(false), 3000); // Hide toast after 3 seconds
             }
         } catch (error) {
             console.error(error);
@@ -63,7 +66,7 @@ function Signup() {
 
     return (
         <div className="mt-20 sm:mt-8 md:mt-8 lg:mt-2 xl:mt-2 min-h-screen flex items-center justify-center bg-gray-900 px-4 py-6">
-            <div className="w-full max-w-md bg-black shadow-lg rounded-lg p-8 mt-12 border border-red-600">
+            <div className="w-full max-w-lg bg-black shadow-lg rounded-lg p-8 mt-12 border border-red-600">
                 <h2 className="text-2xl font-bold mb-6 text-center text-red-500">New to CarBazaar?</h2>
                 <p className="text-lg text-center text-gray-400 mb-4">Please sign up to continue</p>
                 <form onSubmit={validate} className="space-y-4">
@@ -146,6 +149,13 @@ function Signup() {
                     </Link>
                 </div>
                 {info && <h3 className="mt-4 text-center text-red-500">{info}</h3>}
+
+                {/* Toast Notification */}
+                {showToast && (
+                    <div className="fixed top-4 right-4 bg-red-600 text-white px-4 py-2 rounded-lg shadow-lg">
+                        Signup Successful!
+                    </div>
+                )}
             </div>
         </div>
     );

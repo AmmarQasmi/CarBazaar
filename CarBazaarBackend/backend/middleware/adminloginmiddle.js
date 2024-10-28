@@ -1,3 +1,5 @@
+import { db } from "../DB/connect.js";
+
 export const validateAdminLogin = async (req, res, next) => {
     const { email, password } = req.body;
 

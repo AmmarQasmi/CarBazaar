@@ -18,8 +18,8 @@ const AdvancedSearch = () => {
   };
 
   return (
-    <div className="p-6 bg-gray-800 rounded-lg shadow-md">
-      <h2 className="text-2xl font-semibold mb-4 text-center pt-4 text-red-500">Select Price Range</h2>
+    <div className="p-6 bg-gray-800 rounded-lg shadow-md pb-20 pt-20">
+      <h2 className="text-2xl font-semibold mb-0 text-center text-red-500">Select Price Range</h2>
 
       <input
         type="range"

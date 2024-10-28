@@ -27,9 +27,9 @@ function Header() {
 
     return (
         <header
-            className={`fixed w-full top-0 z-50 transition-colors duration-300 group ${isScrolled ? 'bg-gradient-to-r from-gray-950 to-gray-600 text-white hover:bg-black' : 'bg-red-800 text-black shadow-lg hover:bg-gray-950   '}`}
+            className={`fixed w-full top-0 z-50 transition-colors duration-300 group ${isScrolled ? 'bg-gradient-to-r from-gray-950 to-gray-600 text-white hover:bg-black' : 'bg-red-900 text-black shadow-lg hover:bg-gray-950   '}`}
         >
-            <nav className='py-2.5 w-full relative'>
+            <nav className='py-2.5 relative'>
                 <span className="absolute left-0 bottom-0 w-full h-0.5 bg-red-300 transition-all duration-300 scale-x-0 group-hover:scale-x-100 origin-left"></span>
                 <div className="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl px-4 lg:px-6">
                     <Link to="/">

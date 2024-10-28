@@ -1,6 +1,5 @@
 import { db } from "../DB/connect.js";
 import express from "express";
-import bcrypt from 'bcrypt'; // Import bcrypt
 import { validateAdminLogin } from "../middleware/adminloginmiddle.js"; // Import the middleware
 
 const AdminLoginRouter = express.Router();
@@ -14,10 +13,8 @@ AdminLoginRouter.post("/adminlogin", validateAdminLogin, async (req, res) => {
             return res.status(401).json({ message: "User not found", error: true });
         }
 
-        // Use bcrypt to compare the hashed password
-        const isPasswordCorrect = await bcrypt.compare(password, req.user.password);
-
-        if (!isPasswordCorrect) {
+        // Simple password comparison
+        if (req.user.password !== password) {
             return res.status(401).json({ message: "Invalid email or password", error: true });
         }
 
@@ -32,6 +29,6 @@ AdminLoginRouter.post("/adminlogin", validateAdminLogin, async (req, res) => {
         console.error(error);
         return res.status(500).json({ message: "Internal server error", error: true });
     }
-});
+}); 
 
 export default AdminLoginRouter;

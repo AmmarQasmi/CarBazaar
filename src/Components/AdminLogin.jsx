@@ -18,7 +18,7 @@ export default function AdminLogin() {
     const password = formData.get('password');
 
     try {
-      const response = await fetch('http://localhost:5000/login', {
+      const response = await fetch('http://localhost:5000/adminlogin', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

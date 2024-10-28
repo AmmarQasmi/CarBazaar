@@ -3,7 +3,7 @@ import contactImage from '../assets/contactbg.jpg'; // Adjust this path if neede
 
 function Contact() {
     return (
-        <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-900 to-gray-300">
+        <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-900 to-gray-300 mt-7">
             <div className="w-full max-w-4xl p-5 bg-white bg-opacity-90 rounded-lg shadow-2xl grid lg:grid-cols-2 overflow-hidden">
                 <div className="hidden lg:block bg-cover bg-center" style={{ backgroundImage: `url(${contactImage})` }}></div>
                 

@@ -6,8 +6,11 @@ import { faArrowRight, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 function Home() {
     const images = [
         "https://wallpapers.com/images/hd/black-car-4k-a6ay51d8d0pyex23.jpg",
+        "https://images5.alphacoders.com/546/546892.jpg",
         "https://images.unsplash.com/photo-1696524147929-56f1e4a05caf?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTR8fGRhcmslMjBjYXJ8ZW58MHx8MHx8fDA%3D",
         "https://wallpapers.com/images/hd/black-jeep-pictures-3ff6nh7fjs9tsd46.jpg",
+        "https://images4.alphacoders.com/113/thumb-1920-1137407.jpg",
+        "https://wallpapers.com/images/hd/black-car-4k-htizl5scx31wkqpz.jpg",
     ];
 
     const [currentImage, setCurrentImage] = useState(0);
@@ -30,8 +33,8 @@ function Home() {
     };
 
     return (
-        <>
-            <section className="relative text-center m-0 p-0 w-screen h-screen overflow-hidden">
+        <div>
+            <div className="relative text-center m-0 p-0 w-full h-screen overflow-x-hidden">
                 {/* Carousel container */}
                 <div className="absolute inset-0 w-full h-full">
                     {/* Images for the carousel */}
@@ -58,12 +61,12 @@ function Home() {
                     </button>
 
                     {/* Content and Search bar on top of the images */}
-                    <div className="absolute inset-0 flex flex-col justify-center items-center">
-                        <div className="bg-black bg-opacity-50 p-5 rounded-lg mb-20">
-                            <h1 className="text-4xl font-bold text-red-400 mb-5">
-                                Find a Perfect Car for You or Sell Yours
+                    <div className="absolute inset-0 flex flex-col justify-center items-center pt-20">
+                        <div className="bg-black bg-opacity-50 p-5 rounded-lg mb-20 w-full max-w-2xl">
+                            <h1 className="text-4xl font-bold text-red-400 mb-5 text-center">
+                                Find Perfect Car for You or Sell Yours
                             </h1>
-                            <div className="relative w-full max-w-lg">
+                            <div className="relative w-full">
                                 <input
                                     type="text"
                                     placeholder="Search for cars..."
@@ -76,10 +79,10 @@ function Home() {
                         </div>
                     </div>
                 </div>
-            </section>
+            </div>
 
             {/* Marketplace Section */}
-            <section className="bg-gray-50 py-16">
+            <section className="bg-gray-50 py-16 w-full">
                 <div className="max-w-7xl mx-auto text-center px-4 sm:px-6 lg:px-8">
                     <h2 className="text-3xl font-extrabold text-gray-800 mb-4 scrollEffect">
                         Explore Our Car Marketplace
@@ -126,7 +129,7 @@ function Home() {
             </section>
 
             {/* Community Section */}
-            <section className="bg-gray-100 py-12">
+            <section className="bg-gray-100 py-12 w-full">
                 <div className="max-w-4xl mx-auto text-center p-8">
                     <h2 className="text-3xl font-extrabold text-gray-800 mb-4 scrollEffect">
                         Join CarBazaar Community
@@ -175,7 +178,7 @@ function Home() {
                     </div>
                 </div>
             </section>
-        </>
+        </div>
     );
 }
 
