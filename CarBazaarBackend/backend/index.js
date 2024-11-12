@@ -8,6 +8,7 @@ import SignupRouter from "./Signup/signup.js";
 import LoginRouter from "./Login/login.js";
 import AdminLoginRouter from "./Login/adminlogin.js";
 import UserRouter from "./Users/users.js";
+import VehicleRouter from "./Vehicle/cars.js";
 const app = express();
 
 const PORT = 5000;
@@ -24,6 +25,7 @@ app.use("/",SignupRouter); //use the signup router
 app.use("/", LoginRouter); // Use the login router
 app.use("/", AdminLoginRouter); // Use the admin login router
 app.use("/", UserRouter); // Use the user login router
+app.use("/", VehicleRouter); // Use the user login router
 
 
 app.listen(PORT, () => {

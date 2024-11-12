@@ -33,3 +33,10 @@
   margin: 0;
   padding: 0;
 }
+
+
+.scrollEffect2 {
+  animation: appear 1.5s ease-out;
+  animation-timeline: scroll;
+  animation-range: entry 0 cover 40%;
+}

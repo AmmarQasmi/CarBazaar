@@ -28,7 +28,7 @@ function Footer() {
                                         className="relative group hover:text-red-500"
                                     >
                                         Home
-                                        <span className="absolute left-0 bottom-0 w-0 h-[2px] bg-red-500 transition-all duration-300 group-hover:w-full"></span>
+                                        <span className="absolute left-0 bottom-0 w-0 h-[2px] bg-red-500 transition-all duration-300 group-hover:w-full group-hover:"></span>
                                     </Link>
                                 </li>
                                 <li>

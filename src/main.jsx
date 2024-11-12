@@ -19,6 +19,7 @@ import InsuranceOptions from './Components/InsuranceOptions.jsx';
 import ProfilePage from './Components/ProfilePage.jsx';
 import AdminLogin from './Components/AdminLogin.jsx';
 import AdminPage from './Components/AdminPage.jsx';
+import Purchase from './Components/Purchase.jsx';
 
 // Simulate authentication status
 const isAuthenticated = true; // Set this to true if the user is authenticated
@@ -40,6 +41,7 @@ const router = createBrowserRouter(
       <Route path="profilepage" element={<ProtectedRoute isAuthenticated={isAuthenticated} element={ProfilePage} />} />
       <Route path="adminpage" element={<ProtectedRoute isAuthenticated={isAuthenticated} element={AdminPage} />} />
       <Route path="Browse" element={<BrowseCars />} />
+      <Route path="purchase" element={<Purchase />} /> 
       <Route path="Contact" element={<Contact />} />
     </Route>
   )
