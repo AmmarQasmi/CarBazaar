@@ -4,12 +4,19 @@ import emailjs from 'emailjs-com';
 
 const Purchase = () => {
     const [cars, setCars] = useState([]);
+    const [filteredCars, setFilteredCars] = useState([]);
     const [selectedCar, setSelectedCar] = useState(null);
     const [email, setEmail] = useState('');
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState('');
     const [purchaseComplete, setPurchaseComplete] = useState(false);
     const [purchaseId, setPurchaseId] = useState(null);
+
+    // Filter state
+    const [makeFilter, setMakeFilter] = useState('');
+    const [yearFilter, setYearFilter] = useState('');
+    const [minPrice, setMinPrice] = useState('');
+    const [maxPrice, setMaxPrice] = useState('');
 
     useEffect(() => {
         const fetchCars = async () => {
@@ -18,6 +25,7 @@ const Purchase = () => {
                 const response = await axios.get('http://localhost:5000/cars');
                 if (response.data && response.data.vehicles) {
                     setCars(response.data.vehicles);
+                    setFilteredCars(response.data.vehicles); // initialize with all cars
                 } else {
                     setError('No cars found.');
                 }
@@ -31,6 +39,18 @@ const Purchase = () => {
 
         fetchCars();
     }, []);
+
+    const handleFilterChange = () => {
+        let filtered = cars.filter((car) => {
+            const isMakeMatch = makeFilter ? car.make.toLowerCase().includes(makeFilter.toLowerCase()) : true;
+            const isYearMatch = yearFilter ? car.year.toString() === yearFilter : true;
+            const isPriceMatch =
+                (minPrice ? car.price >= parseFloat(minPrice) : true) &&
+                (maxPrice ? car.price <= parseFloat(maxPrice) : true);
+            return isMakeMatch && isYearMatch && isPriceMatch && car.v_status === 'Available';
+        });
+        setFilteredCars(filtered);
+    };
 
     const handleCarSelect = (car) => {
         setSelectedCar(car);
@@ -54,7 +74,6 @@ const Purchase = () => {
             const paymentType = 'Credit Card';
             const userId = 123; // Should be from the logged-in user
 
-            // Make the purchase request to the backend to store the purchase
             const response = await axios.post('http://localhost:5000/purchase', {
                 userId,
                 postId: selectedCar.v_id,
@@ -67,18 +86,14 @@ const Purchase = () => {
                 throw new Error(response.data.message);
             }
 
-            // Retrieve the purchaseId from the response to get the purchase details
             const { purchaseId } = response.data;
 
-            // Fetch purchase details using the purchaseId
             const purchaseResponse = await axios.post('http://localhost:5000/purchase-details', {
                 purchaseId,
             });
 
-            // Update the UI with the purchase details
             setPurchaseId(purchaseResponse.data.p_id);
 
-            // Send a confirmation email using EmailJS
             const templateParams = {
                 user_email: email,
                 car_id: selectedCar.v_id,
@@ -122,11 +137,53 @@ const Purchase = () => {
             <div className="max-w-4xl mx-auto">
                 <h1 className="text-3xl font-bold mb-8 text-red-500 pt-7">Purchase a Car</h1>
                 {error && <div className="text-red-500 text-center mb-4">{error}</div>}
+
+                {/* Filter Options */}
+                <div className="mb-8">
+                    <h2 className="text-xl font-semibold mb-4">Filter Cars</h2>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <input
+                            type="text"
+                            placeholder="Make"
+                            value={makeFilter}
+                            onChange={(e) => setMakeFilter(e.target.value)}
+                            className="p-2 bg-gray-800 border border-gray-700 rounded-lg text-white"
+                        />
+                        <input
+                            type="text"
+                            placeholder="Year"
+                            value={yearFilter}
+                            onChange={(e) => setYearFilter(e.target.value)}
+                            className="p-2 bg-gray-800 border border-gray-700 rounded-lg text-white"
+                        />
+                        <input
+                            type="number"
+                            placeholder="Min Price"
+                            value={minPrice}
+                            onChange={(e) => setMinPrice(e.target.value)}
+                            className="p-2 bg-gray-800 border border-gray-700 rounded-lg text-white"
+                        />
+                        <input
+                            type="number"
+                            placeholder="Max Price"
+                            value={maxPrice}
+                            onChange={(e) => setMaxPrice(e.target.value)}
+                            className="p-2 bg-gray-800 border border-gray-700 rounded-lg text-white"
+                        />
+                    </div>
+                    <button
+                        onClick={handleFilterChange}
+                        className="mt-4 bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 transition-colors"
+                    >
+                        Apply Filters
+                    </button>
+                </div>
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <div>
                         <h2 className="text-xl font-semibold mb-4">Available Cars</h2>
                         <div className="space-y-4 max-h-96 overflow-y-auto scrollEffect2">
-                            {cars.map((car) => (
+                            {filteredCars.map((car) => (
                                 car.v_status === 'Available' && (
                                     <div
                                         key={car.v_id}

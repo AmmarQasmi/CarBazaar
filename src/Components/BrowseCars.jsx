@@ -35,12 +35,22 @@ const BrowseCar = () => {
     <div className="p-6 bg-gray-900 rounded-lg shadow-md pt-20 pb-20">
       <h2 className="text-2xl font-semibold mb-4 text-red-500">Browse Cars</h2>
 
-      <Link
-        to="/purchase"
-        className="absolute top-20 right-4 sm:top-16 sm:right-6 md:top-20 md:right-8 lg:top-16 lg:right-10 bg-red-600 text-white py-2 px-4 rounded transition-colors duration-300 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50"
-      >
-        Purchase
-      </Link>
+      <div className="flex flex-row items-center sm:flex-row md:flex-col md:items-end gap-4 p-2">
+        <Link
+          to="/purchase"
+          className="bg-red-600 text-white py-2 px-4 rounded transition-colors duration-300 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50"
+        >
+          Purchase
+        </Link>
+
+        <Link
+          to="/AdvanceSearch"
+          className="bg-red-600 text-white py-2 px-4 rounded transition-colors duration-300 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50"
+        >
+          Filter Out
+        </Link>
+      </div>
+
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
         {cars.length > 0 ? (
