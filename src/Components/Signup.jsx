@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
 function Signup() {
-    const [info, setInfo] = useState(""); // To display messages
+    const [info, setInfo] = useState(""); // To display error messages
     const [loading, setLoading] = useState(false); // Loading state
-    const [showToast, setShowToast] = useState(false); // Toast visibility
+    const [successMessage, setSuccessMessage] = useState(""); // Success message state
     const [formData, setFormData] = useState({
         username: '',
         email: '',
@@ -57,9 +57,14 @@ function Signup() {
             const data = await response.json();
 
             if (response.ok) {
-                setInfo("Signup Successful!");
-                setShowToast(true);
-                setTimeout(() => setShowToast(false), 3000); // Hide toast after 3 seconds
+                setSuccessMessage("Signup Successful!");
+                setFormData({
+                    username: '',
+                    email: '',
+                    password: '',
+                    confirmPassword: '',
+                    phone_no: ''
+                });
             } else {
                 setInfo(data.message || "Signup failed");
             }
@@ -71,8 +76,26 @@ function Signup() {
         }
     };
 
+    // Effect to clear success message after 5 seconds
+    useEffect(() => {
+        if (successMessage) {
+            const timer = setTimeout(() => {
+                setSuccessMessage("");
+            }, 3000);
+            return () => clearTimeout(timer);
+        }
+    }, [successMessage]);
+
+    // Success message component
+    const SuccessMessage = ({ message }) => (
+        <div className="fixed top-4 left-1/2 transform -translate-x-1/2 bg-red-400 text-white px-6 py-3 rounded-lg shadow-lg z-50 transition-opacity duration-300">
+            {message}
+        </div>
+    );
+
     return (
         <div className="mt-20 sm:mt-8 md:mt-8 lg:mt-2 xl:mt-2 min-h-screen flex items-center justify-center bg-gray-900 px-4 py-6">
+            {successMessage && <SuccessMessage message={successMessage} />}
             <div className="w-full max-w-lg bg-black shadow-lg rounded-lg p-8 mt-12 border border-red-600">
                 <h2 className="text-2xl font-bold mb-6 text-center text-red-500">New to CarBazaar?</h2>
                 <p className="text-lg text-center text-gray-400 mb-4">Please sign up to continue</p>
@@ -156,13 +179,6 @@ function Signup() {
                     </Link>
                 </div>
                 {info && <h3 className="mt-4 text-center text-red-500">{info}</h3>}
-
-                {/* Toast Notification */}
-                {showToast && (
-                    <div className="fixed top-4 right-4 bg-red-600 text-white px-4 py-2 rounded-lg shadow-lg">
-                        Signup Successful!
-                    </div>
-                )}
             </div>
         </div>
     );
