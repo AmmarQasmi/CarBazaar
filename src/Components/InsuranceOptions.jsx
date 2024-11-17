@@ -1,10 +1,44 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 
 function InsuranceOptions() {
     const [showForm, setShowForm] = useState(false);
+    const [formData, setFormData] = useState({
+        coverage_amount: '',
+        start_date: '',
+        end_date: '',
+        services_service_id: '',
+        vehicle_v_id: '',
+        users_u_id: '',
+        email: ''
+    });
+    const [error, setError] = useState('');
+    const [success, setSuccess] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
 
     const handleApplyNow = () => {
         setShowForm(!showForm);
+    };
+
+    const handleChange = (e) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setIsLoading(true);
+        try {
+            const response = await axios.post('http://localhost:5000/api/insurance', formData);
+            setSuccess('Insurance application submitted successfully!');
+            setError('');
+            console.log(response.data);
+        } catch (err) {
+            setError('Failed to submit application. Please try again.');
+            setSuccess('');
+            console.error(err);
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     return (
@@ -46,23 +80,30 @@ function InsuranceOptions() {
                 {showForm && (
                     <div className="mt-8 p-6 bg-gray-900 rounded-lg shadow-md">
                         <h3 className="text-2xl font-bold mb-4 text-red-500">Insurance Application Form</h3>
-                        <form className="grid gap-4">
+                        {error && <p className="text-red-500 mb-4">{error}</p>}
+                        {success && <p className="text-green-500 mb-4">{success}</p>}
+                        <form onSubmit={handleSubmit} className="grid gap-4">
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div>
-                                    <label className="block text-gray-300">Full Name</label>
+                                    <label className="block text-gray-300">Coverage Amount</label>
                                     <input
-                                        type="text"
+                                        type="number"
+                                        name="coverage_amount"
+                                        value={formData.coverage_amount}
+                                        onChange={handleChange}
                                         className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-md focus:ring-2 focus:ring-red-500 text-white"
-                                        placeholder="Enter your full name"
+                                        placeholder="Enter coverage amount"
                                         required
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-gray-300">Contact Number</label>
+                                    <label className="block text-gray-300">Start Date</label>
                                     <input
-                                        type="tel"
+                                        type="date"
+                                        name="start_date"
+                                        value={formData.start_date}
+                                        onChange={handleChange}
                                         className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-md focus:ring-2 focus:ring-red-500 text-white"
-                                        placeholder="Enter your contact number"
                                         required
                                     />
                                 </div>
@@ -70,53 +111,83 @@ function InsuranceOptions() {
 
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div>
-                                    <label className="block text-gray-300">Email Address</label>
+                                    <label className="block text-gray-300">End Date</label>
                                     <input
-                                        type="email"
+                                        type="date"
+                                        name="end_date"
+                                        value={formData.end_date}
+                                        onChange={handleChange}
                                         className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-md focus:ring-2 focus:ring-red-500 text-white"
-                                        placeholder="Enter your email address"
                                         required
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-gray-300">Vehicle Model</label>
+                                    <label className="block text-gray-300">Service ID</label>
                                     <input
-                                        type="text"
+                                        type="number"
+                                        name="services_service_id"
+                                        value={formData.services_service_id}
+                                        onChange={handleChange}
                                         className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-md focus:ring-2 focus:ring-red-500 text-white"
-                                        placeholder="Enter your vehicle model"
+                                        placeholder="Enter service ID"
+                                        required
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block text-gray-300">Vehicle ID</label>
+                                    <input
+                                        type="number"
+                                        name="vehicle_v_id"
+                                        value={formData.vehicle_v_id}
+                                        onChange={handleChange}
+                                        className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-md focus:ring-2 focus:ring-red-500 text-white"
+                                        placeholder="Enter vehicle ID"
+                                        required
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-gray-300">User ID</label>
+                                    <input
+                                        type="number"
+                                        name="users_u_id"
+                                        value={formData.users_u_id}
+                                        onChange={handleChange}
+                                        className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-md focus:ring-2 focus:ring-red-500 text-white"
+                                        placeholder="Enter user ID"
                                         required
                                     />
                                 </div>
                             </div>
 
                             <div>
-                                <label className="block text-gray-300">Coverage Type</label>
-                                <select
+                                <label className="block text-gray-300">Email Address</label>
+                                <input
+                                    type="email"
+                                    name="email"
+                                    value={formData.email}
+                                    onChange={handleChange}
                                     className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-md focus:ring-2 focus:ring-red-500 text-white"
+                                    placeholder="Enter your email address"
                                     required
-                                >
-                                    <option value="">Select Coverage Type</option>
-                                    <option value="comprehensive">Comprehensive</option>
-                                    <option value="collision">Collision</option>
-                                    <option value="liability">Liability</option>
-                                </select>
-                            </div>
-
-                            <div>
-                                <label className="block text-gray-300">Additional Comments</label>
-                                <textarea
-                                    className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-md focus:ring-2 focus:ring-red-500 text-white"
-                                    placeholder="Any additional information"
-                                    rows="4"
-                                ></textarea>
+                                />
                             </div>
 
                             <div className="text-center">
                                 <button
                                     type="submit"
-                                    className="bg-red-600 text-white py-2 px-6 rounded-lg hover:bg-red-700 transition duration-300"
+                                    disabled={isLoading}
+                                    className="bg-red-600 text-white py-2 px-6 rounded-lg hover:bg-red-700 transition duration-300 disabled:opacity-50"
                                 >
-                                    Submit Application
+                                    {isLoading ? (
+                                        <svg className="animate-spin h-5 w-5 mr-3 inline-block" viewBox="0 0 24 24">
+                                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                        </svg>
+                                    ) : null}
+                                    {isLoading ? 'Submitting...' : 'Submit Application'}
                                 </button>
                             </div>
                         </form>

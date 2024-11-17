@@ -13,10 +13,12 @@ CREATE TABLE USERS (
     cover_pic VARCHAR(100),
     phone_no BIGINT NOT NULL,
     role_id INT NOT NULL,
-    is_login CHAR(1),
+    is_login CHAR(1) not null default 'N',
     CONSTRAINT password_length CHECK (LENGTH(password) BETWEEN 8 AND 50),
     FOREIGN KEY (role_id) REFERENCES ROLES(role_id)
 );
+
+SELECT * FROM USERS;
 
 CREATE TABLE VEHICLE (
     V_id SERIAL PRIMARY KEY,
@@ -31,6 +33,17 @@ CREATE TABLE VEHICLE (
     users_u_id INT NOT NULL,
     FOREIGN KEY (users_u_id) REFERENCES USERS(U_id)
 );
+
+ALTER TABLE VEHICLE
+    ALTER COLUMN vehicle_image TYPE VARCHAR(500);
+
+ALTER TABLE VEHICLE
+    ADD COLUMN V_status VARCHAR(20) NOT NULL DEFAULT 'Available';
+
+update Vehicle
+set V_status = 'N/A' where v_id > 28;
+
+select * from vehicle
 
 CREATE TABLE AVAIL (
     users_u_id INT PRIMARY KEY,
@@ -63,8 +76,8 @@ CREATE TABLE INSURANCE_POLICY (
     start_date DATE NOT NULL,
     end_date DATE NOT NULL,
     created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    services_service_id INT NOT NULL,
-    vehicle_v_id INT NOT NULL,
+    services_service_id INT NOT NULL,	
+    vehicle_v_id INT,
     users_u_id INT NOT NULL,
     FOREIGN KEY (services_service_id) REFERENCES SERVICE(service_id) ON DELETE CASCADE,
     FOREIGN KEY (vehicle_v_id) REFERENCES VEHICLE(V_id) ON DELETE CASCADE,
@@ -78,12 +91,19 @@ CREATE TABLE MAINTENANCE (
     cost NUMERIC NOT NULL,
     service_center VARCHAR(100) NOT NULL,
     services_service_id INT NOT NULL,
-    vehicle_v_id INT NOT NULL,
+    vehicle_v_id INT,
     users_u_id INT NOT NULL,
     FOREIGN KEY (services_service_id) REFERENCES SERVICE(service_id) ON DELETE CASCADE,
     FOREIGN KEY (vehicle_v_id) REFERENCES VEHICLE(V_id) ON DELETE CASCADE,
     FOREIGN KEY (users_u_id) REFERENCES USERS(U_id) ON DELETE CASCADE
 );
+
+ALTER TABLE MAINTENANCE
+ADD COLUMN appointment_date DATE,
+ADD COLUMN appointment_time TIME,
+ADD COLUMN service_location VARCHAR(200),
+ADD COLUMN additional_details TEXT;
+
 
 CREATE TABLE POST (
     post_id SERIAL PRIMARY KEY,
@@ -113,6 +133,18 @@ CREATE TABLE PURCHASE (
     FOREIGN KEY (users_u_id) REFERENCES USERS(U_id) ON DELETE CASCADE
 );
 
+CREATE TABLE contact_us (
+    contact_id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,        
+    email VARCHAR(100) NOT NULL,        
+    phone VARCHAR(20),                   
+    subject VARCHAR(100) NOT NULL,       
+    message TEXT NOT NULL,               
+    status VARCHAR(20) NOT NULL DEFAULT 'Pending',
+    created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,  
+    FOREIGN KEY (email) REFERENCES users(email) ON DELETE CASCADE 
+);
+
 
 
 -- Insert roles
@@ -128,10 +160,22 @@ INSERT INTO USERS (email, name, password, profile_pic, cover_pic, phone_no, role
 
 -- Insert vehicles
 INSERT INTO VEHICLE (make, model, year, fuel_type, mileage, price, vehicle_image, description, users_u_id) VALUES 
-('Toyota', 'Camry', 2020, 'Petrol', 15000, 20000, 'toyota_camry.jpg', 'A reliable sedan.', 1),
-('Honda', 'Civic', 2019, 'Petrol', 25000, 18000, 'honda_civic.jpg', 'A sporty compact car.', 2),
-('Ford', 'F-150', 2021, 'Diesel', 10000, 35000, 'ford_f150.jpg', 'A powerful pickup truck.', 3);
-
+('Toyota', 'Camry', 2020, 'Petrol', 15000, 20000, 'https://hips.hearstapps.com/hmg-prod/images/2020-toyta-camry-mmp-1-1566921359.jpg?crop=0.878xw:0.737xh;0.0554xw,0.263xh&resize=1200:*', 'A reliable sedan.', 1),
+('Honda', 'Civic', 2019, 'Petrol', 25000, 18000, 'https://di-uploads-pod21.dealerinspire.com/lindsayhonda/uploads/2019/04/2019-Honda-Civic-LX-Platinum-White-Pearl-HERO.png', 'A sporty compact car.', 2),
+('Ford', 'F-150', 2021, 'Diesel', 10000, 35000, 'https://media.ford.com/content/fordmedia/fna/us/en/products/trucks/f-150/2021-f-150/jcr:content/content/media-section-parsys/media_section_3cac/media-section-parsys/textimage_ee11/image.img.951.535.jpg/1594220287585.jpg', 'A powerful pickup truck.', 3),
+('Chevrolet', 'Malibu', 2022, 'Hybrid', 12000, 25000, 'https://i.ytimg.com/vi/okpcNpglUac/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLAiPbGRCjkA7TweJW1Pgxwzkfs6Xg', 'A sleek hybrid sedan.', 4),
+('BMW', 'X5', 2020, 'Petrol', 30000, 50000, 'https://i.ytimg.com/vi/nM7kuCIR04w/maxresdefault.jpg', 'A luxury SUV with great performance.', 1),
+('Audi', 'A4', 2021, 'Diesel', 8000, 40000, 'https://cache3.pakwheels.com/system/car_generation_pictures/6038/original/A4_2016.jpg?1637056969', 'A stylish and efficient compact sedan.', 2),
+('Toyota', 'RAV4', 2020, 'Hybrid', 22000, 30000, 'https://media.ed.edmunds-media.com/toyota/rav4-hybrid/2019/oem/2019_toyota_rav4-hybrid_4dr-suv_limited_fq_oem_1_1600.jpg', 'A reliable hybrid SUV.', 3),
+('Ford', 'Mustang', 2021, 'Petrol', 5000, 45000, 'https://images.ctfassets.net/c9t6u0qhbv9e/7uaqDS3qjgDbeIM77vnXka/c5555f3710f00cb59929abc1d92cc781/2021_Ford_Mustang_Review_Thumbnail.jpg', 'An iconic muscle car with modern tech.', 4),
+('Nissan', 'Altima', 2020, 'Petrol', 18000, 22000, 'https://di-uploads-pod26.dealerinspire.com/tennesonnissan/uploads/2020/01/2020-Nissan-Altima-Platinum-storm-blue-metallic-hero.png', 'A comfortable and affordable sedan.', 18),
+('Honda', 'CR-V', 2021, 'Petrol', 15000, 28000, 'https://media.ed.edmunds-media.com/honda/cr-v/2020/oem/2020_honda_cr-v_4dr-suv_touring_fq_oem_1_1600.jpg', 'A versatile SUV with great fuel economy.', 20),
+('Mazda', 'CX-5', 2021, 'Diesel', 12000, 33000, 'https://www.everycar.jp/blog/wp-content/uploads/1601395.jpg', 'A compact crossover with excellent handling.', 22),
+('Hyundai', 'Tucson', 2022, 'Hybrid', 10000, 35000, 'https://cdn.jdpower.com/JDPA_2022%20Hyundai%20Tucson%20Gray%20Front%20View.jpg', 'A well-rounded and efficient SUV.', 1),
+('Kia', 'Sorento', 2021, 'Petrol', 25000, 38000, 'https://di-uploads-pod23.dealerinspire.com/kiadelray1/uploads/2020/11/2021-Kia-Sorento-parked-at-base-of-mountain-.png', 'A spacious and comfortable midsize SUV.', 2),
+('Volkswagen', 'Golf', 2022, 'Electric', 5000, 32000, 'https://cdn.jdpower.com/JDPA_2022%20Volkswagen%20Golf%20GTI%20Light%20Green%20Front%20Quarter%20View.jpg', 'A sporty electric hatchback.', 3),
+('Jeep', 'Grand Cherokee', 2020, 'Diesel', 20000, 45000, 'https://cdn.jdpower.com/JDPA_2020%20Jeep%20Grand%20Cherokee%20Limited%20X%20Slate%20Blue%20Front%20View.jpg', 'A rugged and luxurious SUV.', 4);
+ 
 -- Insert availability
 INSERT INTO AVAIL (users_u_id) VALUES 
 (1), 
@@ -140,21 +184,21 @@ INSERT INTO AVAIL (users_u_id) VALUES
 
 -- Insert services
 INSERT INTO SERVICE (description, service_type, service_price, vehicle_v_id) VALUES 
-('Oil Change', 'Maintenance', 50, 1),
-('Tire Rotation', 'Maintenance', 30, 2),
-('Brake Inspection', 'Safety', 70, 3);
+('Oil Change', 'Maintenance', 50, 21),
+('Tire Rotation', 'Maintenance', 30, 22),
+('Brake Inspection', 'Maintenace', 70, 23);
 
 -- Insert service availability
 INSERT INTO SERVICE_AVAILABILITY (users_u_id, services_service_id, vehicle_v_id) VALUES 
-(1, 1, 1),
-(2, 2, 2),
-(3, 3, 3);
+(1, 1, 21),
+(2, 2, 22),
+(3, 3, 23);
 
 -- Insert insurance policies
 INSERT INTO INSURANCE_POLICY (coverage_amount, start_date, end_date, services_service_id, vehicle_v_id, users_u_id) VALUES 
-(10000, '2024-01-01', '2025-01-01', 1, 1, 1),
-(20000, '2024-02-01', '2025-02-01', 2, 2, 2),
-(15000, '2024-03-01', '2025-03-01', 3, 3, 3);
+(10000, '2024-01-01', '2025-01-01', 7, 21, 1),
+(20000, '2024-02-01', '2025-02-01', 8, 22, 2),
+(15000, '2024-03-01', '2025-03-01', 9, 23, 3);
 
 -- Insert maintenance records
 INSERT INTO MAINTENANCE (service_date, service_description, cost, service_center, services_service_id, vehicle_v_id, users_u_id) VALUES 
@@ -163,16 +207,45 @@ INSERT INTO MAINTENANCE (service_date, service_description, cost, service_center
 ('2024-03-10', 'Inspected brakes', 70, 'Brake Shop', 3, 3, 3);
 
 -- Insert posts
-INSERT INTO POST (price, description, seller_id, images, users_u_id, vehicle_v_id, vehicle_users_u_id) VALUES 
-(22000, '2018 Honda Accord for sale', 1, 'honda_accord.jpg', 1, 1, 1),
-(17000, '2019 Ford Escape available', 2, 'ford_escape.jpg', 2, 2, 2),
-(30000, '2020 Toyota RAV4 for sale', 3, 'toyota_rav4.jpg', 3, 3, 3);
+INSERT INTO POST (price, description, seller_id, images, users_u_id, vehicle_v_id, vehicle_users_u_id) 
+VALUES 
+  (17000, '2019 Ford Escape available', 2, 'ford_escape.jpg', 2, 21, 2),
+  (30000, '2020 Toyota RAV4 for sale', 3, 'toyota_rav4.jpg', 3, 22, 3);
+
 
 -- Insert purchases
 INSERT INTO PURCHASE (purchase_date, purchase_price, payment_status, payment_type, users_u_id, post_post_id, post_users_u_id) VALUES 
-('2024-01-20', 22000, 'completed', 'credit card', 1, 1, 1),
-('2024-02-25', 17000, 'completed', 'cash', 2, 2, 2),
-('2024-03-15', 30000, 'pending', 'credit card', 3, 3, 3);
+('2024-01-20', 22000, 'completed', 'credit card', 1, 7, 1),
+('2024-02-25', 17000, 'completed', 'cash', 2, 8, 2),
+('2024-03-15', 30000, 'pending', 'credit card', 3, 9, 3);
+
+
+
+select * from purchase;
+select * from users;
+select * from post;
+select * from maintenance;
+select * from service;
+select * from vehicle;
+select * from INSURANCE_POLICY;
+select * from contact_us;
+
+UPDATE users
+SET email = 'aq22@gmail.com'
+WHERE u_id = 4;
+
+delete from users
+where u_id > 22;
+
+update users
+set is_login = 'N'
+where u_id > 0;
+
+
+
+
+
+
 
 
 

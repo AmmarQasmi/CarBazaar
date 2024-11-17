@@ -1,174 +1,263 @@
-import React, { useState, useEffect } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowRight, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import React, { useState } from "react";
+import axios from "axios";
 
-function Maintenance() {
-    const images = [
-        "https://wallpapers.com/images/hd/gray-gradient-background-l63d92e4zrvl6f6d.jpg",
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQx1IzBAx05Y8zlghbApMHxy54uT3XU9o8RuA&s",
-        "https://www.shutterstock.com/image-photo/dark-concrete-wall-floor-background-600nw-1937061217.jpg",
-    ];
+const MaintenanceForm = () => {
+  const [formData, setFormData] = useState({
+    service_date: "",
+    service_description: "",
+    cost: "",
+    service_center: "",
+    services_service_id: "",
+    vehicle_v_id: "",
+    users_u_id: "",
+    appointment_date: "",
+    appointment_time: "",
+    service_location: "",
+    additional_details: "",
+    email: "",
+  });
 
-    const [currentImage, setCurrentImage] = useState(0);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
-    useEffect(() => {
-        const interval = setInterval(() => {
-            setCurrentImage((prevImage) => (prevImage + 1) % images.length);
-        }, 5000);
-        return () => clearInterval(interval);
-    }, [images.length]);
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
 
-    const goToPrevious = () => {
-        setCurrentImage((prevImage) => (prevImage - 1 + images.length) % images.length);
-    };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-    const goToNext = () => {
-        setCurrentImage((prevImage) => (prevImage + 1) % images.length);
-    };
+    for (const [key, value] of Object.entries(formData)) {
+      if (!value && key !== "additional_details") {
+        setError(`Please provide a valid value for "${key.replace(/_/g, " ")}".`);
+        setSuccess("");
+        return;
+      }
+    }
 
-    return (
-        <div className="relative min-h-screen bg-gradient-to-r from-gray-900 via-gray-800 to-gray-700 overflow-hidden ">
-            <div
-                className="absolute inset-0 bg-cover bg-center"
-                style={{
-                    backgroundImage: `url(${images[currentImage]})`,
-                    transition: 'background-image 1s ease-in-out',
-                }}
-            ></div>
+    try {
+      const response = await axios.post("http://localhost:5000/api/maintenance", {
+        ...formData,
+        cost: parseFloat(formData.cost),
+      });
 
-            <button
-                onClick={goToPrevious}
-                className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-transparent text-white p-3 rounded-full hover:bg-red-700 hover:scale-105 active:scale-95 transition-all z-10 focus:outline-none focus:ring-2 focus:ring-red-400"
-                aria-label="Previous image"
-            >
-                <FontAwesomeIcon icon={faArrowLeft} />
-            </button>
-            <button
-                onClick={goToNext}
-                className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-transparent text-white p-3 rounded-full hover:bg-red-700 hover:scale-105 active:scale-95 transition-all z-10 focus:outline-none focus:ring-2 focus:ring-red-400"
-                aria-label="Next image"
-            >
-                <FontAwesomeIcon icon={faArrowRight} />
-            </button>
+      console.log("Success:", response.data);
+      setSuccess("Maintenance request submitted successfully!");
+      setError("");
+    } catch (err) {
+      console.error("Error:", err.response?.data || err.message);
+      setError(err.response?.data?.message || "Failed to submit the form. Please try again.");
+      setSuccess("");
+    }
+  };
 
-            <div className="bg-gray-900 p-6 sm:p-8 md:p-10 rounded-lg shadow-xl w-full max-w-2xl mx-auto relative z-20 mt-10 sm:mt-10 md:mt-20 lg:mt-24 lg:mb-20 xl:mt-20 xl:mb-10 ">
-                <h1 className="text-3xl sm:text-4xl font-bold mb-6 sm:mb-8 text-center text-red-500">Car Maintenance Request</h1>
+  return (
+    <div className="min-h-screen bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-3xl mx-auto">
+        <h2 className="text-3xl font-extrabold text-red-500 text-center mt-5 mb-8">
+          Maintenance Request Form
+        </h2>
+        <form onSubmit={handleSubmit} className="space-y-6 bg-gray-800 p-8 rounded-lg shadow-lg">
+          {error && <p className="text-red-500 text-center font-semibold">{error}</p>}
+          {success && <p className="text-green-500 text-center font-semibold">{success}</p>}
 
-                <form className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
-                    <div className="col-span-1 sm:col-span-2">
-                        <label className="block text-red-400 text-lg font-semibold mb-2" htmlFor="fullName">Full Name</label>
-                        <input
-                            type="text"
-                            id="fullName"
-                            className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 text-white placeholder-gray-500"
-                            placeholder="Enter your name"
-                        />
-                    </div>
-
-                    <div>
-                        <label className="block text-red-400 text-lg font-semibold mb-2" htmlFor="contactNumber">Contact Number</label>
-                        <input
-                            type="tel"
-                            id="contactNumber"
-                            className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 text-white placeholder-gray-500"
-                            placeholder="Enter your contact number"
-                        />
-                    </div>
-
-                    <div>
-                        <label className="block text-red-400 text-lg font-semibold mb-2" htmlFor="email">Email Address</label>
-                        <input
-                            type="email"
-                            id="email"
-                            className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 text-white placeholder-gray-500"
-                            placeholder="Enter your email address"
-                        />
-                    </div>
-
-                    <div>
-                        <label className="block text-red-400 text-lg font-semibold mb-2" htmlFor="carModel">Car Model</label>
-                        <input
-                            type="text"
-                            id="carModel"
-                            className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 text-white placeholder-gray-500"
-                            placeholder="Enter your car model"
-                        />
-                    </div>
-
-                    <div>
-                        <label className="block text-red-400 text-lg font-semibold mb-2" htmlFor="regNumber">Vehicle Registration Number</label>
-                        <input
-                            type="text"
-                            id="regNumber"
-                            className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 text-white placeholder-gray-500"
-                            placeholder="Enter your vehicle registration number"
-                        />
-                    </div>
-
-                    <div className="col-span-1 sm:col-span-2">
-                        <label className="block text-red-400 text-lg font-semibold mb-2" htmlFor="serviceType">Service Type</label>
-                        <select
-                            id="serviceType"
-                            className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 text-white"
-                        >
-                            <option value="">Select Service Type</option>
-                            <option value="oil_change">Oil Change</option>
-                            <option value="tire_change">Tire Change</option>
-                            <option value="battery_replacement">Battery Replacement</option>
-                            <option value="full_service">Full Service</option>
-                        </select>
-                    </div>
-
-                    <div>
-                        <label className="block text-red-400 text-lg font-semibold mb-2" htmlFor="appointmentDate">Preferred Appointment Date</label>
-                        <input
-                            type="date"
-                            id="appointmentDate"
-                            className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 text-white"
-                        />
-                    </div>
-
-                    <div>
-                        <label className="block text-red-400 text-lg font-semibold mb-2" htmlFor="appointmentTime">Preferred Appointment Time</label>
-                        <input
-                            type="time"
-                            id="appointmentTime"
-                            className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 text-white"
-                        />
-                    </div>
-
-                    <div className="col-span-1 sm:col-span-2">
-                        <label className="block text-red-400 text-lg font-semibold mb-2" htmlFor="serviceLocation">Service Location</label>
-                        <input
-                            type="text"
-                            id="serviceLocation"
-                            className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 text-white placeholder-gray-500"
-                            placeholder="Enter your preferred service location"
-                        />
-                    </div>
-
-                    <div className="col-span-1 sm:col-span-2">
-                        <label className="block text-red-400 text-lg font-semibold mb-2" htmlFor="additionalDetails">Additional Details</label>
-                        <textarea
-                            id="additionalDetails"
-                            className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 text-white placeholder-gray-500"
-                            placeholder="Enter additional details about the maintenance"
-                            rows="4"
-                        ></textarea>
-                    </div>
-
-                    <div className="col-span-1 sm:col-span-2 flex justify-center mt-4">
-                        <button
-                            type="submit"
-                            className="bg-red-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-400 transition duration-300"
-                        >
-                            Submit Request
-                        </button>
-                    </div>
-                </form>
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+            <div>
+              <label htmlFor="service_date" className="block text-sm font-medium text-gray-300">
+                Service Date
+              </label>
+              <input
+                type="date"
+                id="service_date"
+                name="service_date"
+                value={formData.service_date}
+                onChange={handleChange}
+                required
+                className="mt-1 block w-full bg-gray-700 border border-gray-600 rounded-md shadow-sm py-2 px-3 text-white focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
+              />
             </div>
-        </div>
-    );
-}
 
-export default Maintenance;
+            <div>
+              <label htmlFor="appointment_date" className="block text-sm font-medium text-gray-300">
+                Appointment Date
+              </label>
+              <input
+                type="date"
+                id="appointment_date"
+                name="appointment_date"
+                value={formData.appointment_date}
+                onChange={handleChange}
+                required
+                className="mt-1 block w-full bg-gray-700 border border-gray-600 rounded-md shadow-sm py-2 px-3 text-white focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
+              />
+            </div>
+
+            <div>
+              <label htmlFor="appointment_time" className="block text-sm font-medium text-gray-300">
+                Appointment Time
+              </label>
+              <input
+                type="time"
+                id="appointment_time"
+                name="appointment_time"
+                value={formData.appointment_time}
+                onChange={handleChange}
+                required
+                className="mt-1 block w-full bg-gray-700 border border-gray-600 rounded-md shadow-sm py-2 px-3 text-white focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
+              />
+            </div>
+
+            <div>
+              <label htmlFor="cost" className="block text-sm font-medium text-gray-300">
+                Cost
+              </label>
+              <input
+                type="number"
+                id="cost"
+                name="cost"
+                value={formData.cost}
+                onChange={handleChange}
+                step="0.01"
+                required
+                className="mt-1 block w-full bg-gray-700 border border-gray-600 rounded-md shadow-sm py-2 px-3 text-white focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label htmlFor="service_description" className="block text-sm font-medium text-gray-300">
+              Service Description
+            </label>
+            <textarea
+              id="service_description"
+              name="service_description"
+              value={formData.service_description}
+              onChange={handleChange}
+              required
+              rows={3}
+              className="mt-1 block w-full bg-gray-700 border border-gray-600 rounded-md shadow-sm py-2 px-3 text-white focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="service_center" className="block text-sm font-medium text-gray-300">
+              Service Center
+            </label>
+            <input
+              type="text"
+              id="service_center"
+              name="service_center"
+              value={formData.service_center}
+              onChange={handleChange}
+              required
+              className="mt-1 block w-full bg-gray-700 border border-gray-600 rounded-md shadow-sm py-2 px-3 text-white focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
+            />
+          </div>
+
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
+            <div>
+              <label htmlFor="services_service_id" className="block text-sm font-medium text-gray-300">
+                Service ID
+              </label>
+              <input
+                type="number"
+                id="services_service_id"
+                name="services_service_id"
+                value={formData.services_service_id}
+                onChange={handleChange}
+                required
+                className="mt-1 block w-full bg-gray-700 border border-gray-600 rounded-md shadow-sm py-2 px-3 text-white focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
+              />
+            </div>
+
+            <div>
+              <label htmlFor="vehicle_v_id" className="block text-sm font-medium text-gray-300">
+                Vehicle ID
+              </label>
+              <input
+                type="number"
+                id="vehicle_v_id"
+                name="vehicle_v_id"
+                value={formData.vehicle_v_id}
+                onChange={handleChange}
+                required
+                className="mt-1 block w-full bg-gray-700 border border-gray-600 rounded-md shadow-sm py-2 px-3 text-white focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
+              />
+            </div>
+
+            <div>
+              <label htmlFor="users_u_id" className="block text-sm font-medium text-gray-300">
+                User ID
+              </label>
+              <input
+                type="number"
+                id="users_u_id"
+                name="users_u_id"
+                value={formData.users_u_id}
+                onChange={handleChange}
+                required
+                className="mt-1 block w-full bg-gray-700 border border-gray-600 rounded-md shadow-sm py-2 px-3 text-white focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label htmlFor="service_location" className="block text-sm font-medium text-gray-300">
+              Service Location
+            </label>
+            <input
+              type="text"
+              id="service_location"
+              name="service_location"
+              value={formData.service_location}
+              onChange={handleChange}
+              required
+              className="mt-1 block w-full bg-gray-700 border border-gray-600 rounded-md shadow-sm py-2 px-3 text-white focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="additional_details" className="block text-sm font-medium text-gray-300">
+              Additional Details
+            </label>
+            <textarea
+              id="additional_details"
+              name="additional_details"
+              value={formData.additional_details}
+              onChange={handleChange}
+              rows={3}
+              className="mt-1 block w-full bg-gray-700 border border-gray-600 rounded-md shadow-sm py-2 px-3 text-white focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="email" className="block text-sm font-medium text-gray-300">
+              Your Email
+            </label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              required
+              className="mt-1 block w-full bg-gray-700 border border-gray-600 rounded-md shadow-sm py-2 px-3 text-white focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
+            />
+          </div>
+
+          <div>
+            <button
+              type="submit"
+              className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+            >
+              Submit Maintenance Request
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+};
+
+export default MaintenanceForm;

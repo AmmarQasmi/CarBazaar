@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowRight, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import HeroSection from './HeroSection';
 
 function Home() {
     const images = [
@@ -60,24 +61,7 @@ function Home() {
                         <FontAwesomeIcon icon={faArrowRight} />
                     </button>
 
-                    {/* Content and Search bar on top of the images */}
-                    <div className="absolute inset-0 flex flex-col justify-center items-center pt-20">
-                        <div className="bg-black bg-opacity-50 p-5 rounded-lg mb-20 w-full max-w-2xl">
-                            <h1 className="text-4xl font-bold text-red-400 mb-5 text-center">
-                                Find Perfect Car for You or Sell Yours
-                            </h1>
-                            <div className="relative w-full">
-                                <input
-                                    type="text"
-                                    placeholder="Search for cars..."
-                                    className="w-full px-4 py-3 pr-20 border border-red-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-red-400"
-                                />
-                                <button className="absolute right-0 top-0 h-full bg-red-500 text-white px-6 py-3 rounded-r-lg hover:bg-red-400">
-                                    Search
-                                </button>
-                            </div>
-                        </div>
-                    </div>
+                    <HeroSection />
                 </div>
             </div>
 
@@ -106,9 +90,9 @@ function Home() {
                             imgSrc: "https://img.freepik.com/premium-vector/car-search-logo_8168-62.jpg",
                         },
                         {
-                            title: "Finance Options",
-                            description: "Explore flexible finance options to fit your budget and get the car you need.",
-                            link: '/FinanceOption',
+                            title: "Insurance Booking",
+                            description: "Explore flexible insurance options to fit your budget and protect your car.",
+                            link: '/InsuranceOptions',
                             imgSrc: "https://media.istockphoto.com/id/1423550966/vector/profit-rounded-lines-icon.jpg?s=612x612&w=0&k=20&c=_KFEK2PUIlquKGVUYQ18I2rO6xQ3ieFDEx-xHpXRLTI=",
                         }].map((item, index) => (
                             <div key={index} className="bg-white shadow-lg rounded-lg p-6 hover:shadow-xl transition-transform duration-300 hover:scale-105 cursor-pointer scrollEffect">

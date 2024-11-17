@@ -11,7 +11,7 @@ const ProfilePage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white p-5 grid grid-rows-[auto_1fr]">
+    <div className="min-h-screen mt-10 bg-gray-900 text-white p-5 grid grid-rows-[auto_1fr]">
       <div className="flex items-center mb-5 gap-4 justify-between">
         <div className="bg-red-500 text-white w-20 h-20 rounded-full flex items-center justify-center text-4xl">
           {user.profilePic ? (

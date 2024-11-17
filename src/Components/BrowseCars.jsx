@@ -6,29 +6,43 @@ import defaultImage from '../assets/default-image-url.jpg';
 const BrowseCar = () => {
   const [cars, setCars] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchCars = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/cars', { headers: { 'Cache-Control': 'no-cache' } });
-        console.log(response.data);
-        setCars(response.data.vehicles);
+        const response = await axios.get('http://localhost:5000/api/vehicles', {
+          headers: { 'Cache-Control': 'no-cache' },
+        });
+
+        // Validate and set the response data correctly
+        if (response.data && Array.isArray(response.data.data)) {
+          setCars(response.data.data); // Use `data` field from response
+        } else {
+          throw new Error('Unexpected API response structure.');
+        }
       } catch (error) {
-        console.error('Error fetching car data:', error);
+        console.error(error);
+        setError('Failed to fetch car data. Please try again later.');
       } finally {
         setLoading(false);
       }
     };
+
     fetchCars();
   }, []);
 
-  const handlePurchase = (carId) => {
-    console.log(`Purchasing car with ID: ${carId}`);
-    // Add more purchase logic here
-  };
-
   if (loading) {
-    return <p className="text-red-500 text-center text-xl">Loading cars...</p>;
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="loader border-t-4 border-red-500 rounded-full w-12 h-12 animate-spin"></div>
+        <p className="ml-4 text-red-500 text-xl">Loading cars...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return <p className="text-red-500 text-center text-xl">{error}</p>;
   }
 
   return (
@@ -51,43 +65,50 @@ const BrowseCar = () => {
         </Link>
       </div>
 
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 scrollEffect2">
+        {cars.map((car) => {
+          const carImageUrl = car.vehicle_image ? car.vehicle_image : defaultImage;
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-        {cars.length > 0 ? (
-          cars.map(car => {
-            const carImageUrl = car.vehicle_image ? `${car.vehicle_image}` : defaultImage;
-            console.log('Car image URL:', carImageUrl);
+          return (
+            <article
+              key={car.v_id} // Use v_id as the unique key
+              className="car-card bg-black rounded-lg shadow-lg p-4 text-center transition-transform transform hover:scale-105 border border-red-500"
+            >
+              {car.v_status !== 'Available' && (
+                <div
+                  className="absolute top-2 right-2 bg-red-400 rounded-full px-4 py-2"
+                  aria-label="Car not available"
+                >
+                  <p className="text-white font-bold text-xl">N/A</p>
+                </div>
+              )}
 
-            return (
-              <div key={car.V_id} className="car-card bg-black rounded-lg shadow-lg p-4 text-center transition-transform transform hover:scale-105 border border-red-500 scrollEffect2">
-                {/* Check if car status is not "Available" */}
-                {car.v_status !== "Available" && (
-                  <div className="absolute inset-0 bg-red-400 bg-opacity-75 flex items-center justify-center">
-                    <p className="text-white font-bold text-3xl">N/A</p>
-                  </div>
-                )}
 
-                <img
-                  src={carImageUrl}
-                  alt={`${car.make} ${car.model}`}
-                  className="rounded-md mb-2 w-full h-48 object-contain"
-                />
-                <h3 className="text-lg font-bold text-white">{car.make || 'Unknown'} {car.model || 'Model'}</h3>
-                <p className="text-sm text-gray-400">Year: {car.year || 'Unknown'}</p>
-                <p className="text-sm text-gray-400">Fuel Type: {car.fuel_type || 'Unknown'}</p>
-                <p className="text-sm text-gray-400">Mileage: {car.mileage || '0'} km</p>
-                <p className="text-lg font-semibold text-red-500">Price: ${car.price || 'N/A'}</p>
-                <p className="text-sm text-gray-400">{car.description || 'No description available'}</p>
-                <p className={`text-sm font-semibold ${car.v_status === "Available" ? 'text-green-500' : 'text-red-700'}`}>
-                  {car.v_status || 'No description available'}
-                </p>
-                <br />
-              </div>
-            );
-          })
-        ) : (
-          <p className="col-span-full text-center text-gray-400">No cars available.</p>
-        )}
+              <img
+                src={carImageUrl}
+                alt={`${car.make || 'Unknown'} ${car.model || 'Model'}`}
+                onError={(e) => {
+                  e.target.src = defaultImage;
+                }}
+                className="rounded-md mb-2 w-full h-48 object-contain"
+              />
+              <h3 className="text-lg font-bold text-white">
+                {car.make || 'Unknown'} {car.model || 'Model'}
+              </h3>
+              <p className="text-sm text-gray-400">Year: {car.year || 'Unknown'}</p>
+              <p className="text-sm text-gray-400">Fuel Type: {car.fuel_type || 'Unknown'}</p>
+              <p className="text-sm text-gray-400">Mileage: {car.mileage || '0'} km</p>
+              <p className="text-lg font-semibold text-red-500">Price: ${car.price || 'N/A'}</p>
+              <p className="text-sm text-gray-400">{car.description || 'No description available'}</p>
+              <p
+                className={`text-sm font-semibold ${car.v_status === 'Available' ? 'text-green-500' : 'text-red-700'
+                  }`}
+              >
+                {car.v_status || 'Unavailable'}
+              </p>
+            </article>
+          );
+        })}
       </div>
     </div>
   );

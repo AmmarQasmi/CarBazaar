@@ -33,7 +33,7 @@ function Header() {
                 <span className="absolute left-0 bottom-0 w-full h-0.5 bg-red-300 transition-all duration-300 scale-x-0 group-hover:scale-x-100 origin-left"></span>
                 <div className="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl px-4 lg:px-6">
                     <Link to="/">
-                        <img src="./CAR_latest.png" alt="logo" className='h-8 w-auto cursor-pointer' />
+                        <img src="./CAR_latest.png" alt="logo" className='h-8 w-auto cursor-pointer logo' />
                     </Link>
 
                     {/* Mobile Hamburger Icon */}

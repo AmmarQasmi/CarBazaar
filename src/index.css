@@ -36,7 +36,12 @@
 
 
 .scrollEffect2 {
-  animation: appear 1.5s ease-out;
+  animation: appear 0.5s ease-in;
   animation-timeline: scroll;
-  animation-range: entry 0 cover 40%;
+  animation-range: entry 0 cover 20%;
+}
+
+.logo {
+  mix-blend-mode: screen;
+  object-fit: contain;
 }

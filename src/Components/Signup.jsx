@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
 function Signup() {
-    const [info, setInfo] = useState("");
-    const [loading, setLoading] = useState(false);
-    const [showToast, setShowToast] = useState(false); // State for showing toast
+    const [info, setInfo] = useState(""); // To display messages
+    const [loading, setLoading] = useState(false); // Loading state
+    const [showToast, setShowToast] = useState(false); // Toast visibility
     const [formData, setFormData] = useState({
         username: '',
         email: '',
@@ -13,18 +13,20 @@ function Signup() {
         phone_no: ''
     });
 
+    // Handle input changes
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData({
             ...formData,
-            [name]: value
+            [name]: value,
         });
     };
 
+    // Validate and submit form
     const validate = async (e) => {
         e.preventDefault();
 
-        const { password, confirmPassword } = formData;
+        const { username, email, password, confirmPassword, phone_no } = formData;
 
         if (password !== confirmPassword) {
             setInfo("Passwords do not match");
@@ -32,32 +34,37 @@ function Signup() {
         }
 
         setLoading(true);
+        setInfo("");
 
         try {
-            const response = await fetch('http://localhost:5000/signup', {
+            // Constructing payload to match API requirements
+            const payload = {
+                email,
+                name: username,
+                password,
+                phone_no,
+            };
+
+            const response = await fetch('http://localhost:5000/api/signup', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({
-                    email: formData.email,
-                    name: formData.username,
-                    password: formData.password,
-                    phone_no: formData.phone_no
-                }),
+                body: JSON.stringify(payload),
             });
 
+            // Parsing the response
             const data = await response.json();
 
-            if (data.error) {
-                setInfo(data.message);
-            } else {
+            if (response.ok) {
                 setInfo("Signup Successful!");
-                setShowToast(true); // Show the toast notification
+                setShowToast(true);
                 setTimeout(() => setShowToast(false), 3000); // Hide toast after 3 seconds
+            } else {
+                setInfo(data.message || "Signup failed");
             }
         } catch (error) {
-            console.error(error);
+            console.error("Error during signup:", error);
             setInfo("An error occurred during signup");
         } finally {
             setLoading(false);
@@ -75,7 +82,7 @@ function Signup() {
                         <input
                             type="text"
                             name="username"
-                            placeholder='Username'
+                            placeholder="Username"
                             required
                             value={formData.username}
                             onChange={handleChange}
@@ -87,7 +94,7 @@ function Signup() {
                         <input
                             type="email"
                             name="email"
-                            placeholder='Email'
+                            placeholder="Email"
                             required
                             value={formData.email}
                             onChange={handleChange}
@@ -99,7 +106,7 @@ function Signup() {
                         <input
                             type="password"
                             name="password"
-                            placeholder='Enter Your Password'
+                            placeholder="Enter Your Password"
                             required
                             value={formData.password}
                             onChange={handleChange}
@@ -111,7 +118,7 @@ function Signup() {
                         <input
                             type="password"
                             name="confirmPassword"
-                            placeholder='Re-enter Password'
+                            placeholder="Re-enter Password"
                             required
                             value={formData.confirmPassword}
                             onChange={handleChange}
@@ -123,7 +130,7 @@ function Signup() {
                         <input
                             type="text"
                             name="phone_no"
-                            placeholder='Phone Number'
+                            placeholder="Phone Number"
                             required
                             value={formData.phone_no}
                             onChange={handleChange}
@@ -132,7 +139,7 @@ function Signup() {
                     </div>
                     <div className="flex justify-center">
                         <button
-                            type='submit'
+                            type="submit"
                             disabled={loading}
                             className="w-full bg-red-600 text-white py-2 px-4 rounded-lg font-semibold hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 transition duration-300 ease-in-out"
                         >

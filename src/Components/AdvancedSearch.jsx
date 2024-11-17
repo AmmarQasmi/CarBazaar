@@ -20,9 +20,9 @@ const AdvancedSearch = () => {
     const fetchCars = async () => {
       try {
         setLoading(true);
-        const response = await axios.get('http://localhost:5000/cars');
-        if (response.data && response.data.vehicles) {
-          const availableCars = response.data.vehicles.filter(car => car.v_status === "Available");
+        const response = await axios.get('http://localhost:5000/api/vehicles');
+        if (response.data && response.data.status === "success") {
+          const availableCars = response.data.data.filter(car => car.v_status === "Available");
           setCars(availableCars);
           setFilteredCars(availableCars);
         } else {
@@ -67,8 +67,8 @@ const AdvancedSearch = () => {
   return (
     <div className="flex flex-col lg:flex-row">
       {/* Filter Menu */}
-      <div className={`p-2 mt-12 bg-gray-800 shadow-md 'block' : 'hidden' sm:block`}>
-        <div className="m-4 flex justify-center lg:justify-centre lg:m-4">
+      <div className="p-2 mt-12 bg-gray-800 shadow-md sm:block">
+        <div className="m-4 flex justify-center lg:justify-center lg:m-4">
           <Link
             to="/purchase"
             className="bg-red-600 text-white font-semibold py-2 px-6 rounded-lg shadow-lg transition duration-300 hover:bg-red-700 hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 focus:ring-opacity-75"
@@ -131,7 +131,7 @@ const AdvancedSearch = () => {
         {filteredCars.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
             {filteredCars.map(car => (
-              <div key={car.id} className="car-card bg-gray-900 rounded-lg shadow-lg p-4 border border-red-500">
+              <div key={car.v_id} className="car-card bg-gray-900 rounded-lg shadow-lg p-4 border border-red-500">
                 <img src={car.vehicle_image} alt={`${car.make} ${car.model}`} className="rounded-md mb-2 w-full h-48 object-fill" />
                 <h3 className="text-lg font-bold text-white">{car.make} {car.model}</h3>
                 <p className="text-sm text-gray-400">Variant: {car.variant}</p>

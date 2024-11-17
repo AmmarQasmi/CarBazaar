@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import emailjs from 'emailjs-com';
 
 const Purchase = () => {
     const [cars, setCars] = useState([]);
     const [filteredCars, setFilteredCars] = useState([]);
     const [selectedCar, setSelectedCar] = useState(null);
     const [email, setEmail] = useState('');
+    const [name, setName] = useState('');
+    const [address, setAddress] = useState('');
+    const [phone, setPhone] = useState('');
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState('');
     const [purchaseComplete, setPurchaseComplete] = useState(false);
@@ -22,10 +24,11 @@ const Purchase = () => {
         const fetchCars = async () => {
             try {
                 setIsLoading(true);
-                const response = await axios.get('http://localhost:5000/cars');
-                if (response.data && response.data.vehicles) {
-                    setCars(response.data.vehicles);
-                    setFilteredCars(response.data.vehicles); // initialize with all cars
+                const response = await axios.get('http://localhost:5000/api/vehicles');
+                if (response.data && response.data.status === 'success') {
+                    const availableCars = response.data.data.filter(car => car.v_status === 'Available');
+                    setCars(availableCars);
+                    setFilteredCars(availableCars);
                 } else {
                     setError('No cars found.');
                 }
@@ -36,7 +39,6 @@ const Purchase = () => {
                 setIsLoading(false);
             }
         };
-
         fetchCars();
     }, []);
 
@@ -56,61 +58,45 @@ const Purchase = () => {
         setSelectedCar(car);
     };
 
-    const handleEmailChange = (e) => {
-        setEmail(e.target.value);
+    const handleInputChange = (e, setter) => {
+        setter(e.target.value);
     };
 
     const handlePurchase = async () => {
-        if (!selectedCar || !email) {
-            setError('Please select a car and enter your email.');
+        if (!selectedCar || !email || !name || !address || !phone) {
+            setError('Please fill in all fields and select a car.');
             return;
         }
-
+    
         try {
             setIsLoading(true);
             setError('');
-
+    
             const paymentStatus = 'Pending';
             const paymentType = 'Credit Card';
-            const userId = 123; // Should be from the logged-in user
-
-            const response = await axios.post('http://localhost:5000/purchase', {
-                userId,
-                postId: selectedCar.v_id,
-                purchasePrice: selectedCar.price,
-                paymentStatus,
-                paymentType,
+            const userId = 1; // Should be from the logged-in user
+    
+            // Send purchase request to the backend API with correct parameters
+            const response = await axios.post('http://localhost:5000/api/purchase', {
+                purchase_price: selectedCar.price,         
+                payment_status: paymentStatus,          
+                payment_type: paymentType,              
+                users_u_id: userId,                     
+                post_post_id: selectedCar.v_id,         
+                vehicle_v_id: selectedCar.v_id,            
+                email,
+                name,
+                address,
+                phone,
             });
-
+    
             if (response.data.error) {
                 throw new Error(response.data.message);
             }
-
+    
             const { purchaseId } = response.data;
-
-            const purchaseResponse = await axios.post('http://localhost:5000/purchase-details', {
-                purchaseId,
-            });
-
-            setPurchaseId(purchaseResponse.data.p_id);
-
-            const templateParams = {
-                user_email: email,
-                car_id: selectedCar.v_id,
-                car_make: selectedCar.make,
-                car_model: selectedCar.model,
-                price: selectedCar.price,
-                payment_status: paymentStatus,
-                payment_type: paymentType,
-            };
-
-            await emailjs.send(
-                process.env.REACT_APP_EMAILJS_SERVICE_ID,
-                process.env.REACT_APP_EMAILJS_TEMPLATE_ID,
-                templateParams,
-                process.env.REACT_APP_EMAILJS_USER_ID
-            );
-
+    
+            setPurchaseId(purchaseId);
             setPurchaseComplete(true);
         } catch (err) {
             console.error('Purchase error:', err);
@@ -119,7 +105,7 @@ const Purchase = () => {
             setIsLoading(false);
         }
     };
-
+    
     if (isLoading) {
         return <div className="p-40 text-white text-center">Loading...</div>;
     }
@@ -127,7 +113,7 @@ const Purchase = () => {
     if (purchaseComplete) {
         return (
             <div className="text-green-500 text-center p-16">
-                Purchase complete! An email has been sent with further details.
+                Purchase complete! Thank you for your order. A confirmation will be sent shortly.
             </div>
         );
     }
@@ -210,20 +196,52 @@ const Purchase = () => {
                             <p className="mb-4">Please select a car from the list.</p>
                         )}
                         <div className="mb-4">
+                            <label htmlFor="name" className="block mb-2">Full Name:</label>
+                            <input
+                                type="text"
+                                id="name"
+                                value={name}
+                                onChange={(e) => handleInputChange(e, setName)}
+                                className="w-full p-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 text-white"
+                                required
+                            />
+                        </div>
+                        <div className="mb-4">
                             <label htmlFor="email" className="block mb-2">Email Address:</label>
                             <input
                                 type="email"
                                 id="email"
                                 value={email}
-                                onChange={handleEmailChange}
+                                onChange={(e) => handleInputChange(e, setEmail)}
+                                className="w-full p-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 text-white"
+                                required
+                            />
+                        </div>
+                        <div className="mb-4">
+                            <label htmlFor="address" className="block mb-2">Shipping Address:</label>
+                            <input
+                                type="text"
+                                id="address"
+                                value={address}
+                                onChange={(e) => handleInputChange(e, setAddress)}
+                                className="w-full p-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 text-white"
+                                required
+                            />
+                        </div>
+                        <div className="mb-4">
+                            <label htmlFor="phone" className="block mb-2">Phone Number:</label>
+                            <input
+                                type="text"
+                                id="phone"
+                                value={phone}
+                                onChange={(e) => handleInputChange(e, setPhone)}
                                 className="w-full p-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 text-white"
                                 required
                             />
                         </div>
                         <button
                             onClick={handlePurchase}
-                            disabled={!selectedCar || !email}
-                            className="w-full bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="mt-4 bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 transition-colors"
                         >
                             Complete Purchase
                         </button>

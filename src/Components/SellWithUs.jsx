@@ -9,22 +9,49 @@ function SellWithUs() {
     const [model, setModel] = useState('');
     const [variant, setVariant] = useState('');
     const [sellerId, setSellerId] = useState('');
+    const [loading, setLoading] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
+    const [successMessage, setSuccessMessage] = useState('');
 
     const handleImageChange = (e) => {
         setImages(Array.from(e.target.files));
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
+        setLoading(true);
+        setErrorMessage('');
+        setSuccessMessage('');
+
+        // Create FormData to send as multipart/form-data
         const formData = new FormData();
         formData.append('price', price);
         formData.append('description', description);
-        images.forEach((image) => formData.append('images', image)); 
+        images.forEach((image) => formData.append('images', image));
         formData.append('make', make);
         formData.append('model', model);
         formData.append('variant', variant);
-        formData.append('seller_id', sellerId); 
-        // Handle form submission logic here
+        formData.append('seller_id', sellerId);
+
+        try {
+            const response = await fetch('http://localhost:5000/api/post', {
+                method: 'POST',
+                body: formData,
+            });            
+
+            const result = await response.json();
+
+            if (response.ok) {
+                setSuccessMessage('Car listed successfully!');
+            } else {
+                setErrorMessage(result.message || 'Failed to list the car.');
+            }
+        } catch (error) {
+            setErrorMessage('An error occurred while submitting the form.');
+            console.error('Error submitting form:', error);
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -39,9 +66,7 @@ function SellWithUs() {
 
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     <div>
-                                        <label className="block text-sm font-medium mb-2" htmlFor="make">
-                                            Make
-                                        </label>
+                                        <label className="block text-sm font-medium mb-2" htmlFor="make">Make</label>
                                         <input
                                             id="make"
                                             value={make}
@@ -52,9 +77,7 @@ function SellWithUs() {
                                     </div>
 
                                     <div>
-                                        <label className="block text-sm font-medium mb-2" htmlFor="model">
-                                            Model
-                                        </label>
+                                        <label className="block text-sm font-medium mb-2" htmlFor="model">Model</label>
                                         <input
                                             id="model"
                                             value={model}
@@ -66,9 +89,7 @@ function SellWithUs() {
                                 </div>
 
                                 <div className="mt-4">
-                                    <label className="block text-sm font-medium mb-2" htmlFor="variant">
-                                        Variant
-                                    </label>
+                                    <label className="block text-sm font-medium mb-2" htmlFor="variant">Variant</label>
                                     <select
                                         id="variant"
                                         value={variant}
@@ -85,9 +106,7 @@ function SellWithUs() {
                                 </div>
 
                                 <div className="mt-4">
-                                    <label className="block text-sm font-medium mb-2" htmlFor="images">
-                                        Upload Car Photos
-                                    </label>
+                                    <label className="block text-sm font-medium mb-2" htmlFor="images">Upload Car Photos</label>
                                     <input
                                         type='file'
                                         id='images'
@@ -101,9 +120,7 @@ function SellWithUs() {
 
                             <h5 className="text-xl font-bold mb-4 text-left border-b border-red-500 pb-2">Post Details</h5>
                             <div>
-                                <label className="block text-sm font-medium mb-2" htmlFor="description">
-                                    Description:
-                                </label>
+                                <label className="block text-sm font-medium mb-2" htmlFor="description">Description:</label>
                                 <textarea
                                     id="description"
                                     value={description}
@@ -113,11 +130,9 @@ function SellWithUs() {
                                     rows="4"
                                 />
                             </div>
-                            
+
                             <div>
-                                <label className="block text-sm font-medium mb-2" htmlFor="price">
-                                    Price:
-                                </label>
+                                <label className="block text-sm font-medium mb-2" htmlFor="price">Price:</label>
                                 <input
                                     type="number"
                                     id="price"
@@ -128,25 +143,33 @@ function SellWithUs() {
                                 />
                             </div>
 
+                            {errorMessage && (
+                                <p className="text-red-500 text-sm">{errorMessage}</p>
+                            )}
+
+                            {successMessage && (
+                                <p className="text-green-500 text-sm">{successMessage}</p>
+                            )}
+
                             <button
                                 type="submit"
                                 className="w-full bg-red-600 text-white py-3 rounded-md hover:bg-red-700 transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50"
+                                disabled={loading}
                             >
-                                Publish Ad
+                                {loading ? 'Publishing...' : 'Publish Ad'}
                             </button>
                         </form>
                     </div>
+
                     <div className="bg-gray-800 p-6 flex justify-between items-center text-sm">
-                        <p className="text-gray-400">
-                            © 2024 CarBazaar. All rights reserved.
-                        </p>
+                        <p className="text-gray-400">© 2024 CarBazaar. All rights reserved.</p>
                         <NavLink to="/Contact" className="text-red-400 hover:text-red-300 transition-colors">
                             Contact us
                         </NavLink>
                     </div>
                 </div>
             </section>
-            
+
             <section className='relative p-8'>
                 <div className="md:fixed right-4 bottom-4 flex-col space-y-4 md:flex md:flex-col md:space-y-4 hidden">
                     <NavLink
