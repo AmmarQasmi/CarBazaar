@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require('cors');
 const app = express();
+const path = require('path');  // Add path module
 const pool = require("./DB/connect");
 
 const LoginRouter = require("./Routes/login");
@@ -14,9 +15,12 @@ const InsuranceRouter = require("./Routes/insurance");
 const PostRouter = require("./Routes/post");
 const ContactRouter = require("./Routes/contact");
 
-const PORT = process.env.PORT || 5000; // Default to 5001 if the env variable is not set
+const PORT = process.env.PORT || 5000; // Default to 5000 if the env variable is not set
 app.use(express.json());
 app.use(cors({ origin: "http://localhost:5173" }));
+
+// Serve static files from the 'uploads' directory globally
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 
 app.use("/api", UserRouter); 

@@ -3,127 +3,114 @@ const { sendEmail } = require("../util/emailService"); // Import email service
 
 // Create a new post
 exports.createPost = async (req, res) => {
-    const { price, description, seller_id, images, users_u_id, vehicle_v_id, vehicle_users_u_id, email } = req.body;
+    const { price, description, email, make, model, year, fuel_type, mileage } = req.body;
+    let uploadedImages = [];
 
-    // Check if all fields are provided
-    if (!price || !description || !seller_id || !images || !users_u_id || !vehicle_v_id || !vehicle_users_u_id || !email) {
+    if (req.files) {
+        uploadedImages = req.files.map(file => `/uploads/${file.filename}`);
+    } else if (images) {
+        uploadedImages = images.split(','); // Handle case where images are URLs
+    }
+
+    // Check if all required fields are provided
+    if (!price || !description || !uploadedImages.length || !email || !make || !model || !year || !fuel_type || !mileage) {
         return res.status(400).json({
             status: "error",
-            message: "Please provide all required fields (price, description, seller_id, images, users_u_id, vehicle_v_id, vehicle_users_u_id, email)",
+            message: "Please provide all required fields (price, description, images, email, make, model, year, fuel_type, mileage)",
         });
     }
 
-    // Insert the new post into the database
-    const insertPostQuery = `
-    INSERT INTO POST (price, description, seller_id, images, users_u_id, vehicle_v_id, vehicle_users_u_id)
-    VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *;
-  `;
-
     try {
-        const result = await pool.query(insertPostQuery, [
-            price, description, seller_id, images, users_u_id, vehicle_v_id, vehicle_users_u_id
+        // Fetch the user's ID from the email
+        const fetchUserQuery = `SELECT U_id, name FROM USERS WHERE email = $1;`;
+        const userResult = await pool.query(fetchUserQuery, [email]);
+
+        if (userResult.rowCount === 0) {
+            return res.status(404).json({
+                status: "error",
+                message: "User not found",
+            });
+        }
+
+        const { u_id: users_u_id, name: seller_name } = userResult.rows[0];
+
+        // Insert a new vehicle record
+        const insertVehicleQuery = `
+        INSERT INTO VEHICLE (make, model, year, fuel_type, mileage, price, description, users_u_id, vehicle_image)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING V_id;
+      `;
+
+        const vehicleImage = uploadedImages[0] || images.split(",")[0]; // Use the first image as the vehicle image
+        const vehicleResult = await pool.query(insertVehicleQuery, [
+            make,
+            model,
+            year,
+            fuel_type,
+            mileage,
+            price,
+            description,
+            users_u_id,
+            vehicleImage,
         ]);
 
-        //send confirmation email who posted the vehicle ad
+        const vehicle_v_id = vehicleResult.rows[0].v_id;
+
+        // Insert the post into the POST table
+        const insertPostQuery = `
+        INSERT INTO POST (price, description, seller_id, images, users_u_id, vehicle_v_id, vehicle_users_u_id)
+        VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *;
+      `;
+        const postResult = await pool.query(insertPostQuery, [
+            price,
+            description,
+            users_u_id, // Use the user's ID as the seller ID
+            uploadedImages.length > 0 ? uploadedImages.join(',') : images, // Store the image paths as a comma-separated string
+            users_u_id,
+            vehicle_v_id,
+            users_u_id,
+        ]);
+
+        // Prepare email content
         const emailSubject = "Post Created Successfully!";
         const emailText = `
-            Hi there,
+            Hi ${seller_name},
             
             Your post has been created successfully on our platform. Below are the details:
             
             Price: $${price}
             Description: ${description}
-            Images: ${images}
+            Make: ${make}
+            Model: ${model}
+            Year: ${year}
             
             Thank you for using our service!
             
             Best regards,
             The Team
-            `;
+        `;
 
         const emailHtml = `
             <html>
-                <head>
-                <style>
-                    body {
-                    font-family: Arial, sans-serif;
-                    color: #333;
-                    line-height: 1.6;
-                    }
-                    .email-header {
-                    background-color: #4CAF50;
-                    color: white;
-                    padding: 10px;
-                    text-align: center;
-                    }
-                    .email-content {
-                    margin: 20px;
-                    }
-                    .email-content p {
-                    font-size: 16px;
-                    }
-                    .email-details {
-                    border: 1px solid #ddd;
-                    padding: 10px;
-                    margin-top: 10px;
-                    }
-                    .email-details table {
-                    width: 100%;
-                    border-collapse: collapse;
-                    }
-                    .email-details th, .email-details td {
-                    padding: 8px;
-                    text-align: left;
-                    border-bottom: 1px solid #ddd;
-                    }
-                    .email-footer {
-                    margin-top: 20px;
-                    font-size: 14px;
-                    text-align: center;
-                    color: #777;
-                    }
-                </style>
-                </head>
-                <body>
-                <div class="email-header">
-                    <h2>Your Post Has Been Created!</h2>
-                </div>
-                
-                <div class="email-content">
-                    <p>Hi there,</p>
-                    
-                    <p>Your post has been created successfully on our platform. Below are the details:</p>
-                    
-                    <div class="email-details">
-                    <table>
-                        <tr>
-                        <th>Price</th>
-                        <td>$${price}</td>
-                        </tr>
-                        <tr>
-                        <th>Description</th>
-                        <td>${description}</td>
-                        </tr>
-                        <tr>
-                        <th>Images</th>
-                        <td>${images}</td>
-                        </tr>
-                    </table>
-                    </div>
-
-                    <p>Thank you for using our service!</p>
-                </div>
-                
-                <div class="email-footer">
-                    <p>Best regards,<br>The Team</p>
-                </div>
-                </body>
+            <body>
+                <h2>Your Post Has Been Created!</h2>
+                <p>Hi ${seller_name},</p>
+                <p>Your post has been created successfully on our platform. Below are the details:</p>
+                <ul>
+                    <li><strong>Price:</strong> $${price}</li>
+                    <li><strong>Description:</strong> ${description}</li>
+                    <li><strong>Make:</strong> ${make}</li>
+                    <li><strong>Model:</strong> ${model}</li>
+                    <li><strong>Year:</strong> ${year}</li>
+                </ul>
+                <p>Thank you for using our service!</p>
+                <p>Best regards,<br>The Team</p>
+            </body>
             </html>
-            `;
+        `;
 
+        // Send confirmation email
         try {
-            // Send the email to the user's email address (passed in the request body)
-            await sendEmail(email, emailSubject, emailText, emailHtml); // Send email using the provided email address
+            await sendEmail(email, emailSubject, emailText, emailHtml);
         } catch (emailError) {
             console.error("Error sending email:", emailError);
             return res.status(500).json({
@@ -132,11 +119,11 @@ exports.createPost = async (req, res) => {
             });
         }
 
-        // Respond to the client with the newly created post details
+        // Respond to the client
         return res.status(201).json({
             status: "success",
             message: "Post created successfully and email sent",
-            post: result.rows[0],
+            post: postResult.rows[0],
         });
 
     } catch (error) {
@@ -271,3 +258,5 @@ exports.deletePosts = async (req, res) => {
         });
     }
 };
+
+
