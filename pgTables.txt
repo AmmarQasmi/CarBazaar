@@ -3,6 +3,8 @@ CREATE TABLE ROLES (
     role_name VARCHAR(10) NOT NULL
 );
 
+select * from roles;
+
 CREATE TABLE USERS (
     U_id SERIAL PRIMARY KEY,
     email VARCHAR(100) NOT NULL UNIQUE,
@@ -14,6 +16,7 @@ CREATE TABLE USERS (
     phone_no BIGINT NOT NULL,
     role_id INT NOT NULL,
     is_login CHAR(1) not null default 'N',
+	location varchar(100),
     CONSTRAINT password_length CHECK (LENGTH(password) BETWEEN 8 AND 50),
     FOREIGN KEY (role_id) REFERENCES ROLES(role_id)
 );
@@ -40,15 +43,29 @@ ALTER TABLE VEHICLE
 ALTER TABLE VEHICLE
     ADD COLUMN V_status VARCHAR(20) NOT NULL DEFAULT 'Available';
 
+ALTER TABLE VEHICLE
+    add COLUMN offeredby VARCHAR(20) NOT NULL DEFAULT 'Regular';
+
+update Vehicle
+set offeredby = 'Regular' where offeredby is null;
+
 update Vehicle
 set V_status = 'N/A' where v_id > 28;
 
-select * from vehicle
+ALTER TABLE VEHICLE
+ADD CONSTRAINT vehicle_users_u_id_fkey FOREIGN KEY (users_u_id) REFERENCES USERS(U_id) ON DELETE CASCADE;
+
+select * from vehicle;
+
 
 CREATE TABLE AVAIL (
     users_u_id INT PRIMARY KEY,
     FOREIGN KEY (users_u_id) REFERENCES USERS(U_id)
 );
+
+ALTER TABLE AVAIL
+ADD CONSTRAINT avail_users_u_id_fkey FOREIGN KEY (users_u_id) REFERENCES USERS(U_id) ON DELETE CASCADE;
+
 
 CREATE TABLE SERVICE (
     service_id SERIAL PRIMARY KEY,
@@ -60,6 +77,8 @@ CREATE TABLE SERVICE (
     FOREIGN KEY (vehicle_v_id) REFERENCES VEHICLE(V_id) ON DELETE CASCADE
 );
 
+select * from service
+
 CREATE TABLE SERVICE_AVAILABILITY (
     users_u_id INT NOT NULL,
     services_service_id INT NOT NULL,
@@ -69,6 +88,8 @@ CREATE TABLE SERVICE_AVAILABILITY (
     FOREIGN KEY (services_service_id) REFERENCES SERVICE(service_id) ON DELETE CASCADE,
     FOREIGN KEY (vehicle_v_id) REFERENCES VEHICLE(V_id) ON DELETE CASCADE
 );
+
+select * from SERVICE_AVAILABILITY;
 
 CREATE TABLE INSURANCE_POLICY (
     policy_number SERIAL PRIMARY KEY,
@@ -104,20 +125,19 @@ ADD COLUMN appointment_time TIME,
 ADD COLUMN service_location VARCHAR(200),
 ADD COLUMN additional_details TEXT;
 
+select * from INSURANCE_POLICY;
 
 CREATE TABLE POST (
     post_id SERIAL PRIMARY KEY,
-    price NUMERIC NOT NULL,
     description VARCHAR(200) NOT NULL,
-    seller_id INT NOT NULL,
-    images VARCHAR(100) NOT NULL,
     users_u_id INT NOT NULL,
     vehicle_v_id INT NOT NULL,
-    vehicle_users_u_id INT NOT NULL,
     FOREIGN KEY (users_u_id) REFERENCES USERS(U_id) ON DELETE CASCADE,
     FOREIGN KEY (vehicle_v_id) 
         REFERENCES VEHICLE(V_id) ON DELETE CASCADE
 );
+
+select * from post
 
 CREATE TABLE PURCHASE (
     p_id SERIAL PRIMARY KEY,
@@ -240,13 +260,3 @@ where u_id > 22;
 update users
 set is_login = 'N'
 where u_id > 0;
-
-
-
-
-
-
-
-
-
-

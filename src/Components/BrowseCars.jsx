@@ -83,7 +83,6 @@ const BrowseCar = () => {
                 </div>
               )}
 
-
               <img
                 src={carImageUrl}
                 alt={`${car.make || 'Unknown'} ${car.model || 'Model'}`}
@@ -106,6 +105,15 @@ const BrowseCar = () => {
               >
                 {car.v_status || 'Unavailable'}
               </p>
+              {car.offeredby == 'CB' && (
+                <p
+                  className="absolute top-2 left-2 bg-red-400 rounded-full px-4 py-2"
+                  aria-label="New Models"
+                >
+                  <p className="text-white font-bold text-xl">CB</p>
+                </p>
+              )}
+
             </article>
           );
         })}

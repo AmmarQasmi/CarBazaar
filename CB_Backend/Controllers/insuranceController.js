@@ -1,5 +1,5 @@
 const pool = require("../DB/connect"); // Import the database pool
-const { sendEmail } = require("../util/emailService"); // Import email service
+const { sendEmail } = require("../utils/emailService"); // Import email service
 
 // Create Insurance Policy Controller
 exports.createInsurancePolicy = async (req, res) => {

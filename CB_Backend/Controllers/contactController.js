@@ -1,5 +1,5 @@
 const pool = require("../DB/connect"); // Import the database pool
-const { sendEmail } = require("../util/emailService"); // Import email service
+const { sendEmail } = require("../utils/emailService"); // Import email service
 
 // Create Contact Us Controller
 exports.createContactUs = async (req, res) => {

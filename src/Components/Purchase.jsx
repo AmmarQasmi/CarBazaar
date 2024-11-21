@@ -26,7 +26,7 @@ const Purchase = () => {
                 setIsLoading(true);
                 const response = await axios.get('http://localhost:5000/api/vehicles');
                 if (response.data && response.data.status === 'success') {
-                    const availableCars = response.data.data.filter(car => car.v_status === 'Available');
+                    const availableCars = response.data.data.filter(car => car.v_status === 'Available' &&  car.offeredby === 'CB' );
                     setCars(availableCars);
                     setFilteredCars(availableCars);
                 } else {
@@ -67,35 +67,34 @@ const Purchase = () => {
             setError('Please fill in all fields and select a car.');
             return;
         }
-    
+
         try {
             setIsLoading(true);
             setError('');
-    
+
             const paymentStatus = 'Pending';
             const paymentType = 'Credit Card';
             const userId = 1; // Should be from the logged-in user
-    
-            // Send purchase request to the backend API with correct parameters
+
+            // Send purchase request to the backend API
             const response = await axios.post('http://localhost:5000/api/purchase', {
-                purchase_price: selectedCar.price,         
-                payment_status: paymentStatus,          
-                payment_type: paymentType,              
-                users_u_id: userId,                     
-                post_post_id: selectedCar.v_id,         
-                vehicle_v_id: selectedCar.v_id,            
+                userId,
+                postId: selectedCar.v_id,
+                purchasePrice: selectedCar.price,
+                paymentStatus,
+                paymentType,
                 email,
                 name,
                 address,
                 phone,
             });
-    
+
             if (response.data.error) {
                 throw new Error(response.data.message);
             }
-    
+
             const { purchaseId } = response.data;
-    
+
             setPurchaseId(purchaseId);
             setPurchaseComplete(true);
         } catch (err) {
@@ -105,7 +104,7 @@ const Purchase = () => {
             setIsLoading(false);
         }
     };
-    
+
     if (isLoading) {
         return <div className="p-40 text-white text-center">Loading...</div>;
     }

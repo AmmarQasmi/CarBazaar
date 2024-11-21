@@ -1,61 +1,31 @@
 const express = require('express');
-const PostRouter = express.Router();
 const multer = require('multer');
 const path = require('path');
-const fs = require('fs');  // Import fs module to copy files
 const postController = require('../Controllers/postController');
 
-// Define Multer storage configuration
+// Initialize Router
+const PostRouter = express.Router();
+
+// Multer storage configuration
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        // Save files in the public/uploads directory of your React app
-        const reactPublicPath = path.join(__dirname, '../../public/uploads/');
-        cb(null, reactPublicPath);
+        cb(null, path.join(__dirname, '../../public/uploads/')); // Directory for uploaded files
     },
     filename: (req, file, cb) => {
-        // Use a unique name for each file to avoid conflicts
-        cb(null, Date.now() + path.extname(file.originalname));
+        cb(null, `${Date.now()}${path.extname(file.originalname)}`); // Unique file naming
     },
 });
 
-// Create Multer middleware for multiple file uploads
+// Multer middleware for multiple file uploads
 const upload = multer({ storage });
 
-// Function to copy images from uploads to public folder for react components to use w/o any issue
-function copyImagesToPublic(fileNames) {
-    const sourceDir = path.join(__dirname, '..', 'uploads');
-    const destDir = path.join(__dirname, '..', 'public');
-
-    fileNames.forEach(fileName => {
-        const sourceFilePath = path.join(sourceDir, fileName);
-        const destFilePath = path.join(destDir, fileName);
-
-        // Copy file from source to destination
-        fs.copyFile(sourceFilePath, destFilePath, (err) => {
-            if (err) {
-                console.log(`Error copying file ${fileName}:`, err);
-            } else {
-                console.log(`${fileName} copied to ${destDir}`);
-            }
-        });
-    });
-}
-
 // Define routes
-PostRouter.post('/post', upload.array('images', 5), (req, res, next) => {
-    // Get the list of uploaded file names
-    const fileNames = req.files.map(file => file.filename);
-
-    // Copy images to the public directory
-    copyImagesToPublic(fileNames);
-
-    // Proceed to the controller's createPost method
-    postController.createPost(req, res, next);
-});
-
-PostRouter.get('/post', postController.getAllPosts);
-PostRouter.get('/post/:post_id', postController.getPostsById);
-PostRouter.put('/post/:post_id', postController.updatePosts);
-PostRouter.delete('/post/:post_id', postController.deletePosts);
+PostRouter
+    .post('/post', upload.array('images', 5), postController.createPost) // Upload and create post
+    .get('/post', postController.getAllPosts) // Get all posts
+    .get('/post/:post_id', postController.getPostsById) // Get post by ID
+    .put('/post/:post_id', postController.updatePost) // Update post by ID
+    .delete('/post/:post_id', postController.deletePosts) // Delete post by ID
+    .put('/post/:postId/sold', postController.markPostAsSold);
 
 module.exports = PostRouter;

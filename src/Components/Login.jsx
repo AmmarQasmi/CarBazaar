@@ -29,7 +29,10 @@ function Login({ onLogin }) {
             if (!response.ok) {
                 setError(data.message);
             } else {
-                navigate("/profilepage");
+                // Save the email to local storage on successful login
+                localStorage.setItem('userEmail', email);       //email stored in local stprage means user hai logged in tou 
+                navigate("/profilepage");                       // issi ko use kro to change header
+                window.location.reload();       //forcibly reloading to update all the information as well as header (Though not recommended but still works xD)
             }
 
         } catch (err) {

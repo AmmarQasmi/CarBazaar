@@ -1,33 +1,76 @@
 import React, { useState, useEffect } from 'react';
-import { NavLink, Link } from 'react-router-dom';
+import { NavLink, Link, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCirclePlus, faBars, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faCirclePlus, faBars, faTimes, faShop, faUser } from '@fortawesome/free-solid-svg-icons';
+
+const usersApiUrl = 'http://localhost:5000/api/users';
 
 function Header() {
     const [searchDropdownOpen, setSearchDropdownOpen] = useState(false);
     const [servicesDropdownOpen, setServicesDropdownOpen] = useState(false);
     const [isScrolled, setIsScrolled] = useState(false);
-    const [menuOpen, setMenuOpen] = useState(false); // State for mobile menu
-    const [isLoggedIn, setIsLoggedIn] = useState(false); // Track if user is logged in
-    const [user, setUser] = useState(null); // User data, can store name, profile picture, etc.
+    const [menuOpen, setMenuOpen] = useState(false);
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [user, setUser] = useState(null);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const handleScroll = () => {
             setIsScrolled(window.scrollY > 50);
         };
         window.addEventListener('scroll', handleScroll);
+
+        const checkLoginStatus = async () => {
+            const userEmail = localStorage.getItem('userEmail');
+            if (userEmail) {
+                try {
+                    const response = await fetch(usersApiUrl);
+                    const userData = await response.json();
+                    const loggedInUser = userData.data.find(user => user.email === userEmail); //email found in local storage means user login hai 
+                    if (loggedInUser) {
+                        setIsLoggedIn(true);
+                        setUser(loggedInUser);
+                    } else {
+                        setIsLoggedIn(false);
+                        setUser(null);
+                    }
+                } catch (error) {
+                    console.error('Error fetching user data:', error);
+                    setIsLoggedIn(false);
+                    setUser(null);
+                }
+            } else {
+                setIsLoggedIn(false);
+                setUser(null);
+            }
+        };
+
+        checkLoginStatus();
+
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
-    const handleLogout = () => {
-        setIsLoggedIn(false);
-        setUser(null);
-        // Handle additional logout logic, e.g., clearing tokens, etc.
+    const handleLogout = async () => {
+        if (user) {
+            try {
+                await fetch(`${usersApiUrl}/login/${user.u_id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ is_login: 'N' }),
+                });
+                localStorage.removeItem('userEmail');
+                setIsLoggedIn(false);
+                setUser(null);
+                navigate('/login');
+            } catch (error) {
+                console.error('Error during logout:', error);
+            }
+        }
     };
 
     return (
         <header
-            className={`fixed w-full top-0 z-50 transition-colors duration-300 group ${isScrolled ? 'bg-gradient-to-r from-gray-950 to-gray-600 text-white hover:bg-black' : 'bg-red-900 text-black shadow-lg hover:bg-gray-950   '}`}
+            className={`fixed w-full top-0 z-50 transition-colors duration-300 group ${isScrolled ? 'bg-gradient-to-r from-gray-950 to-gray-600 text-white hover:bg-black' : 'bg-red-900 text-black shadow-lg hover:bg-gray-950'}`}
         >
             <nav className='py-2.5 relative'>
                 <span className="absolute left-0 bottom-0 w-full h-0.5 bg-red-300 transition-all duration-300 scale-x-0 group-hover:scale-x-100 origin-left"></span>
@@ -36,14 +79,12 @@ function Header() {
                         <img src="./CAR_latest.png" alt="logo" className='h-8 w-auto cursor-pointer logo' />
                     </Link>
 
-                    {/* Mobile Hamburger Icon */}
                     <div className="flex items-center lg:hidden">
                         <button onClick={() => setMenuOpen(!menuOpen)}>
                             <FontAwesomeIcon icon={menuOpen ? faTimes : faBars} className="text-gray-300 text-2xl" />
                         </button>
                     </div>
 
-                    {/* Menu Items */}
                     <div className={`flex-col lg:flex lg:flex-row lg:space-x-8 mt-4 font-medium lg:mt-0 ${menuOpen ? 'flex' : 'hidden'} lg:flex`}>
                         <ul className="flex flex-row space-x-8">
                             <li className="relative group">
@@ -135,23 +176,32 @@ function Header() {
                         </ul>
                     </div>
                     <div className="flex justify-end space-x-4">
-                        {isLoggedIn ? (
+                        <NavLink
+                            to="/feed"
+                            className={({ isActive }) => `block py-2 pr-4 pl-3 duration-200 border-b border-gray-700 hover:bg-gray-700 lg:hover:bg-transparent lg:border-0 hover:text-red-400 lg:p-0 ${isActive ? "text-white" : "text-gray-300"}`}
+                        >
+                            <FontAwesomeIcon icon={faShop} />
+                        </NavLink>
+                        <NavLink
+                            to="/seller"
+                            className={({ isActive }) => `block py-2 pr-4 pl-3 duration-200 border-b border-gray-700 hover:bg-gray-700 lg:hover:bg-transparent lg:border-0 hover:text-red-400 lg:p-0 ${isActive ? "text-white" : "text-gray-300"}`}
+                        >
+                            <FontAwesomeIcon icon={faCirclePlus} className="mr-6 text-xl" />
+                        </NavLink>
+                        {isLoggedIn && user ? (
                             <div className="flex items-center">
                                 <div className="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center text-gray-800 font-semibold">
-                                    {user ? user.name.charAt(0).toUpperCase() : "U"}
+                                    {user.name.charAt(0).toUpperCase()}
                                 </div>
-                                <button onClick={handleLogout} className="ml-2 text-gray-300 hover:text-red-400">
+                                <NavLink to="/profilepage">
+                                    <span className="ml-2 text-gray-300">{user.name}</span>
+                                </NavLink>
+                                <button onClick={handleLogout} className="ml-4 text-gray-300 hover:text-red-400">
                                     Logout
                                 </button>
                             </div>
                         ) : (
                             <>
-                                <NavLink
-                                    to="/seller"
-                                    className={({ isActive }) => `block py-2 pr-4 pl-3 duration-200 border-b border-gray-700 hover:bg-gray-700 lg:hover:bg-transparent lg:border-0 hover:text-red-400 lg:p-0 ${isActive ? "text-white" : "text-gray-300"}`}
-                                >
-                                    <FontAwesomeIcon icon={faCirclePlus} className="mr-6 text-xl" />
-                                </NavLink>
                                 <NavLink
                                     to="/Login"
                                     className={({ isActive }) => `block py-2 pr-4 pl-3 duration-200 border-b border-gray-700 hover:bg-gray-700 lg:hover:bg-transparent lg:border-0 hover:text-red-400 lg:p-0 ${isActive ? "text-red-300" : "text-gray-300"}`}

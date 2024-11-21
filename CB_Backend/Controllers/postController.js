@@ -1,5 +1,5 @@
 const pool = require("../DB/connect"); // Import the database pool
-const { sendEmail } = require("../util/emailService"); // Import email service
+const { sendEmail } = require("../utils/emailService"); // Import email service
 
 // Create a new post
 exports.createPost = async (req, res) => {
@@ -57,17 +57,13 @@ exports.createPost = async (req, res) => {
 
         // Insert the post into the POST table
         const insertPostQuery = `
-        INSERT INTO POST (price, description, seller_id, images, users_u_id, vehicle_v_id, vehicle_users_u_id)
-        VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *;
+        INSERT INTO POST (description, users_u_id, vehicle_v_id)
+        VALUES ($1, $2, $3) RETURNING *;
       `;
         const postResult = await pool.query(insertPostQuery, [
-            price,
             description,
             users_u_id, // Use the user's ID as the seller ID
-            uploadedImages.length > 0 ? uploadedImages.join(',') : images, // Store the image paths as a comma-separated string
-            users_u_id,
             vehicle_v_id,
-            users_u_id,
         ]);
 
         // Prepare email content
@@ -135,15 +131,74 @@ exports.createPost = async (req, res) => {
     }
 };
 
+// Mark post as sold
+exports.markPostAsSold = async (req, res) => {
+    const { postId } = req.params; // Assuming postId is passed in the URL
+
+    try {
+        // Update the status of the post to 'sold'
+        const updatePostQuery = `
+            UPDATE POST
+            SET status = $1
+            WHERE post_id = $2
+            RETURNING *;
+        `;
+
+        const result = await pool.query(updatePostQuery, ['sold', postId]);
+
+        if (result.rowCount === 0) {
+            return res.status(404).json({
+                status: "error",
+                message: "Post not found",
+            });
+        }
+
+        return res.status(200).json({
+            status: "success",
+            message: "Post marked as sold",
+            post: result.rows[0], // Return the updated post details
+        });
+
+    } catch (error) {
+        console.error("Error marking post as sold:", error);
+        return res.status(500).json({
+            status: "error",
+            message: "Failed to mark post as sold",
+        });
+    }
+};
+
+
 // Get all posts
 exports.getAllPosts = async (req, res) => {
-    const getAllPostsQuery = "SELECT * FROM POST";
+    const getAllPostsQuery = `
+        SELECT 
+            POST.post_id,
+            POST.description AS post_description,
+            USERS.email AS seller_email,
+            USERS.name AS seller_name,
+            USERS.location AS location,
+            USERS.phone_no AS seller_phone_no,
+            VEHICLE.make AS vehicle_make,
+            VEHICLE.model AS vehicle_model,
+            VEHICLE.year AS vehicle_year,
+            VEHICLE.fuel_type AS vehicle_fuel_type,
+            VEHICLE.mileage AS vehicle_mileage,
+            VEHICLE.price AS vehicle_price,
+            VEHICLE.vehicle_image AS vehicle_image,
+            VEHICLE.description AS vehicle_description,
+            vehicle.offeredby AS vehicle_by
+        FROM 
+            POST
+        INNER JOIN USERS ON POST.users_u_id = USERS.u_id
+        INNER JOIN VEHICLE ON POST.vehicle_v_id = VEHICLE.v_id;
+    `;
 
     try {
         const result = await pool.query(getAllPostsQuery);
         res.status(200).json({
             status: "success",
-            data: result.rows, // Returning all posts
+            data: result.rows, // Returning all posts with joined data
         });
     } catch (error) {
         console.error("Error fetching posts:", error);
@@ -184,45 +239,67 @@ exports.getPostsById = async (req, res) => {
 };
 
 // Update a post by ID
-exports.updatePosts = async (req, res) => {
+// Update a post by ID
+exports.updatePost = async (req, res) => {
     const { post_id } = req.params;
-    const { price, description, images } = req.body;
+    const { price, vehicle_image, description } = req.body;
 
     // Check if required fields are provided
-    if (!price && !description && !images) {
+    if (!price && !vehicle_image && !description) {
         return res.status(400).json({
             status: "error",
-            message: "Please provide at least one field to update (price, description, or images)",
+            message: "Please provide at least one field to update (price, vehicle_image, or description)",
         });
     }
 
-    // Update the post in the database
-    const updatePostQuery = `
-    UPDATE POST
-    SET price = COALESCE($1, price), description = COALESCE($2, description), images = COALESCE($3, images)
-    WHERE post_id = $4
-    RETURNING *;
-  `;
-
     try {
-        const result = await pool.query(updatePostQuery, [
-            price, description, images, post_id
-        ]);
+        // Update the post description
+        let updatePostQuery = `
+            UPDATE POST
+            SET description = COALESCE($1, description)
+            WHERE post_id = $2
+            RETURNING *;
+        `;
 
-        if (result.rows.length === 0) {
+        // Execute the update query for post description
+        const postResult = await pool.query(updatePostQuery, [description, post_id]);
+
+        if (postResult.rows.length === 0) {
             return res.status(404).json({
                 status: "error",
                 message: "Post not found",
             });
         }
 
+        // Now update the vehicle price and vehicle image
+        let updateVehicleQuery = `
+            UPDATE VEHICLE
+            SET price = COALESCE($1, price), vehicle_image = COALESCE($2, vehicle_image)
+            WHERE v_id = (SELECT vehicle_v_id FROM POST WHERE post_id = $3)
+            RETURNING *;
+        `;
+
+        // Execute the update query for vehicle price and image
+        const vehicleResult = await pool.query(updateVehicleQuery, [price, vehicle_image, post_id]);
+
+        if (vehicleResult.rows.length === 0) {
+            return res.status(404).json({
+                status: "error",
+                message: "Vehicle not found for this post",
+            });
+        }
+
+        // Return success response with updated data
         res.status(200).json({
             status: "success",
-            message: "Post updated successfully",
-            data: result.rows[0], // Returning the updated post data
+            message: "Post and vehicle updated successfully",
+            data: {
+                post: postResult.rows[0],
+                vehicle: vehicleResult.rows[0],
+            }
         });
     } catch (error) {
-        console.error("Error updating post:", error);
+        console.error("Error updating post and vehicle:", error);
         res.status(500).json({
             status: "error",
             message: "Internal Server Error",

@@ -8,6 +8,7 @@ import About from './Components/About.jsx';
 import Login from './Components/Login.jsx';
 import Signup from './Components/Signup.jsx';
 import SellWithUs from './Components/SellWithUs.jsx';
+import Feeds from './Components/Feeds.jsx';
 import PartnerWithUs from './Components/PartnerWithUs.jsx';
 import JoinUs from './Components/JoinUs.jsx';
 import AdvancedSearch from './Components/AdvancedSearch.jsx';
@@ -34,14 +35,15 @@ const router = createBrowserRouter(
       <Route path="Signup" element={<Signup />} />
       <Route path="Maintenance" element={<Maintenance />} />
       <Route path="seller" element={<ProtectedRoute isAuthenticated={isAuthenticated} element={SellWithUs} />} />
+      <Route path="feed" element={<ProtectedRoute isAuthenticated={isAuthenticated} element={Feeds} />} />
       <Route path="partner" element={<ProtectedRoute isAuthenticated={isAuthenticated} element={PartnerWithUs} />} />
       <Route path="join" element={<ProtectedRoute isAuthenticated={isAuthenticated} element={JoinUs} />} />
       <Route path="InsuranceOptions" element={<ProtectedRoute isAuthenticated={isAuthenticated} element={InsuranceOptions} />} />
       <Route path="AdvanceSearch" element={<ProtectedRoute isAuthenticated={isAuthenticated} element={AdvancedSearch} />} />
       <Route path="profilepage" element={<ProtectedRoute isAuthenticated={isAuthenticated} element={ProfilePage} />} />
       <Route path="adminpage" element={<ProtectedRoute isAuthenticated={isAuthenticated} element={AdminPage} />} />
+      <Route path="purchase" element={<ProtectedRoute isAuthenticated={isAuthenticated} element={Purchase} />} />
       <Route path="Browse" element={<BrowseCars />} />
-      <Route path="purchase" element={<Purchase />} /> 
       <Route path="Contact" element={<Contact />} />
     </Route>
   )

@@ -18,7 +18,7 @@ export default function AdminLogin() {
     const password = formData.get('password');
 
     try {
-      const response = await fetch('http://localhost:5000/adminlogin', {
+      const response = await fetch('http://localhost:5000/api/admin', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -31,7 +31,10 @@ export default function AdminLogin() {
       if (!response.ok) {
         setError(data.message);
       } else {
-        navigate("/adminpage"); 
+        // Save the email to local storage on successful login
+        localStorage.setItem('userEmail', email); 
+        navigate("/adminpage");
+        window.location.reload();       //forcibly reloading to update all the information as well as header (Though not recommended but still works xD) 
       }
 
     } catch (err) {
