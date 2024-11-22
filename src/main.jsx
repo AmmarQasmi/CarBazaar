@@ -21,6 +21,7 @@ import ProfilePage from './Components/ProfilePage.jsx';
 import AdminLogin from './Components/AdminLogin.jsx';
 import AdminPage from './Components/AdminPage.jsx';
 import Purchase from './Components/Purchase.jsx';
+import RegisterVehicle from './Components/RegisterVehicle.jsx';
 
 // Simulate authentication status
 const isAuthenticated = true; // Set this to true if the user is authenticated
@@ -45,6 +46,7 @@ const router = createBrowserRouter(
       <Route path="purchase" element={<ProtectedRoute isAuthenticated={isAuthenticated} element={Purchase} />} />
       <Route path="Browse" element={<BrowseCars />} />
       <Route path="Contact" element={<Contact />} />
+      <Route path="register" element={<RegisterVehicle />} />
     </Route>
   )
 );

@@ -33,8 +33,8 @@ exports.signupController = async (req, res) => {
     const result = await pool.query(insertUserQuery, [name, email, password, phone_no]);
 
     // Send a welcome email to the user
-    const emailSubject = "Welcome to Our Service!";
-    const emailBody = `
+    const emailSubjectUser = "Welcome to Our Service!";
+    const emailBodyUser = `
       Hi ${name},
       
       Welcome to Our Service! We're thrilled to have you on board. 
@@ -45,8 +45,23 @@ exports.signupController = async (req, res) => {
       The Team
     `;
 
+    // Send a notification email to the company
+    const companyEmail = process.env.EMAIL; // Ensure COMPANY_EMAIL is set in your environment variables
+    const emailSubjectCompany = "New User Signup Notification";
+    const emailBodyCompany = `
+      A new user has signed up for the service. Below are their details:
+
+      - Name: ${name}
+      - Email: ${email}
+      - Phone Number: ${phone_no}
+
+      Please review and welcome them to the platform.
+    `;
+
     try {
-      await sendEmail(email, emailSubject, emailBody); // Call the sendEmail function
+      // Send emails to both user and company
+      await sendEmail(email, emailSubjectUser, emailBodyUser); // Welcome email to user
+      await sendEmail(companyEmail, emailSubjectCompany, emailBodyCompany); // Notification email to company
     } catch (emailError) {
       console.error("Error sending email:", emailError);
       return res.status(500).json({
@@ -58,7 +73,7 @@ exports.signupController = async (req, res) => {
     // Return a success response with the created user
     res.status(201).json({
       status: "success",
-      message: "User created successfully and welcome email sent",
+      message: "User created successfully and emails sent",
       data: result.rows[0], // Returning the user data (excluding password)
     });
   } catch (error) {

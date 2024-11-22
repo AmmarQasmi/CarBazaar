@@ -28,10 +28,10 @@ exports.createInsurancePolicy = async (req, res) => {
         // Commit the transaction
         await client.query('COMMIT');
 
-        // Send confirmation email
-        const subject = "Insurance Policy Confirmation";
+        // Send confirmation email to user
+        const subjectUser = "Insurance Policy Confirmation";
 
-        const text = `
+        const textUser = `
             Dear Customer,
 
             We are pleased to confirm the successful creation of your insurance policy. Below are the policy details:
@@ -47,9 +47,9 @@ exports.createInsurancePolicy = async (req, res) => {
 
             Best regards,
             The CB Bazaar Team
-            `;
+        `;
 
-        const html = `
+        const htmlUser = `
             <h1>Insurance Policy Confirmation</h1>
             <p>Dear Customer,</p>
             <p>We are pleased to confirm the successful creation of your insurance policy. Below are the policy details:</p>
@@ -64,16 +64,49 @@ exports.createInsurancePolicy = async (req, res) => {
             <p>Thank you for choosing CB Bazaar for your insurance needs. Please keep this email for your records.</p>
             <p>Best regards,</p>
             <p><strong>The CB Bazaar Team</strong></p>
-            `;
+        `;
 
+        await sendEmail(email, subjectUser, textUser, htmlUser); // Send email to user
 
-        await sendEmail(email, subject, text, html); // Send the email
+        // Send notification email to the company
+        const companyEmail = process.env.EMAIL; 
+        const subjectCompany = "New Insurance Policy Created";
 
+        const textCompany = `
+            A new insurance policy has been created. Below are the details:
+
+            - User Email: ${email}
+            - Coverage Amount: ${coverage_amount}
+            - Policy Start Date: ${start_date}
+            - Policy End Date: ${end_date}
+            - Service ID: ${services_service_id}
+            - Vehicle ID (if applicable): ${vehicle_v_id || "Not Provided"}
+            - User ID: ${users_u_id}
+
+            Please review this policy and take necessary actions.
+        `;
+
+        const htmlCompany = `
+            <h1>New Insurance Policy Created</h1>
+            <p>A new insurance policy has been created. Below are the details:</p>
+            <ul>
+                <li><strong>User Email:</strong> ${email}</li>
+                <li><strong>Coverage Amount:</strong> ${coverage_amount}</li>
+                <li><strong>Policy Start Date:</strong> ${start_date}</li>
+                <li><strong>Policy End Date:</strong> ${end_date}</li>
+                <li><strong>Service ID:</strong> ${services_service_id}</li>
+                <li><strong>Vehicle ID (if applicable):</strong> ${vehicle_v_id || "Not Provided"}</li>
+                <li><strong>User ID:</strong> ${users_u_id}</li>
+            </ul>
+            <p>Please review this policy and take necessary actions.</p>
+        `;
+
+        await sendEmail(companyEmail, subjectCompany, textCompany, htmlCompany); // Send email to company
 
         // Return success response with the newly created insurance policy
         res.status(201).json({
             status: "success",
-            message: "Insurance policy created successfully",
+            message: "Insurance policy created successfully. Emails sent to user and company.",
             data: insurancePolicyResult.rows[0] // Return the created insurance policy
         });
     } catch (error) {

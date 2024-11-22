@@ -1,7 +1,6 @@
 const pool = require("../DB/connect"); // Import the database pool
 const { sendEmail } = require("../utils/emailService"); // Import email service
 
-// Create a new post
 exports.createPost = async (req, res) => {
     const { price, description, email, make, model, year, fuel_type, mileage } = req.body;
     let uploadedImages = [];
@@ -66,9 +65,9 @@ exports.createPost = async (req, res) => {
             vehicle_v_id,
         ]);
 
-        // Prepare email content
-        const emailSubject = "Post Created Successfully!";
-        const emailText = `
+        // Prepare email content for the seller
+        const emailSubjectUser = "Post Created Successfully!";
+        const emailTextUser = `
             Hi ${seller_name},
             
             Your post has been created successfully on our platform. Below are the details:
@@ -84,8 +83,7 @@ exports.createPost = async (req, res) => {
             Best regards,
             The Team
         `;
-
-        const emailHtml = `
+        const emailHtmlUser = `
             <html>
             <body>
                 <h2>Your Post Has Been Created!</h2>
@@ -104,21 +102,56 @@ exports.createPost = async (req, res) => {
             </html>
         `;
 
-        // Send confirmation email
+        // Prepare email content for the admin/company
+        const companyEmail = process.env.EMAIL; // Ensure COMPANY_EMAIL is set in your environment variables
+        const emailSubjectCompany = "New Post Created Notification";
+        const emailTextCompany = `
+            A new post has been created on the platform. Below are the details:
+            
+            Seller Name: ${seller_name}
+            Email: ${email}
+            Price: $${price}
+            Description: ${description}
+            Make: ${make}
+            Model: ${model}
+            Year: ${year}
+        `;
+        const emailHtmlCompany = `
+            <html>
+            <body>
+                <h2>New Post Created</h2>
+                <p>A new post has been created on the platform. Below are the details:</p>
+                <ul>
+                    <li><strong>Seller Name:</strong> ${seller_name}</li>
+                    <li><strong>Email:</strong> ${email}</li>
+                    <li><strong>Price:</strong> $${price}</li>
+                    <li><strong>Description:</strong> ${description}</li>
+                    <li><strong>Make:</strong> ${make}</li>
+                    <li><strong>Model:</strong> ${model}</li>
+                    <li><strong>Year:</strong> ${year}</li>
+                </ul>
+                <p>Please review the post and take necessary action if needed.</p>
+                <p>Best regards,<br>The Team</p>
+            </body>
+            </html>
+        `;
+
+        // Send confirmation emails
         try {
-            await sendEmail(email, emailSubject, emailText, emailHtml);
+            await sendEmail(email, emailSubjectUser, emailTextUser, emailHtmlUser); // Email to user
+            await sendEmail(companyEmail, emailSubjectCompany, emailTextCompany, emailHtmlCompany); // Email to company/admin
         } catch (emailError) {
             console.error("Error sending email:", emailError);
             return res.status(500).json({
                 status: "error",
-                message: "Post created, but email could not be sent",
+                message: "Post created, but email(s) could not be sent",
             });
         }
 
         // Respond to the client
         return res.status(201).json({
             status: "success",
-            message: "Post created successfully and email sent",
+            message: "Post created successfully and emails sent",
             post: postResult.rows[0],
         });
 
@@ -187,7 +220,8 @@ exports.getAllPosts = async (req, res) => {
             VEHICLE.price AS vehicle_price,
             VEHICLE.vehicle_image AS vehicle_image,
             VEHICLE.description AS vehicle_description,
-            vehicle.offeredby AS vehicle_by
+            VEHICLE.offeredby AS vehicle_by,
+            VEHICLE.v_status AS status
         FROM 
             POST
         INNER JOIN USERS ON POST.users_u_id = USERS.u_id
@@ -198,7 +232,7 @@ exports.getAllPosts = async (req, res) => {
         const result = await pool.query(getAllPostsQuery);
         res.status(200).json({
             status: "success",
-            data: result.rows, // Returning all posts with joined data
+            data: result.rows, // Returning all posts with joined data including status
         });
     } catch (error) {
         console.error("Error fetching posts:", error);

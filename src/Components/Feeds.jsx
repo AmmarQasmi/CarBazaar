@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { DollarSign, EyeOff, Eye, ChevronLeft, ChevronRight, Search } from 'lucide-react';
 import axios from 'axios';
+import { NavLink } from 'react-router-dom';
 
 const Feeds = () => {
     const [cbPosts, setCbPosts] = useState([]);
@@ -34,6 +35,7 @@ const Feeds = () => {
                     fuelType: post.vehicle_fuel_type,
                     vehicleImage: post.vehicle_image,
                     offeredby: post.vehicle_by,
+                    status: post.status || 'Unknown',
                     isHidden: false,
                 }));
                 const cbPosts = fetchedPosts.filter(post => post.offeredby === 'CB');
@@ -50,11 +52,6 @@ const Feeds = () => {
         };
         fetchPosts();
     }, []);
-
-    const handleBuy = (postId) => {
-        console.log(`Buying post with id: ${postId}`);
-        // Implement buy logic here
-    };
 
     const handleHide = (postId, isCbPost) => {
         const updatePosts = (posts) => posts.map(post =>
@@ -104,78 +101,97 @@ const Feeds = () => {
         setFilteredUserPosts(applyFilter(userPosts));
     };
     
-    const PostCard = ({ post, isCbPost }) => (
-        <div className="bg-gray-900 border border-red-500 rounded-lg overflow-hidden w-72 flex-shrink-0 m-2 relative flex flex-col">
-            <div className="p-4 flex-grow">
-                <div className="flex flex-col mb-4">
-                    <div className="flex justify-between items-start">
-                        <h3 className="text-lg font-bold text-red-400 mb-2">{post.sellerName}</h3>
+    const PostCard = ({ post, isCbPost }) => {
+        const isAvailable = post.status?.toLowerCase() === 'available';
+
+        return (
+            <div className="bg-gray-900 border border-red-500 rounded-lg overflow-hidden w-72 flex-shrink-0 m-2 relative flex flex-col">
+                <div className="p-4 flex-grow">
+                    <div className="flex flex-col mb-4">
+                        <div className="flex justify-between items-start">
+                            <h3 className="text-lg font-bold text-red-400 mb-2">{post.sellerName}</h3>
+                            {!post.isHidden && (
+                                <button
+                                    className="flex items-center px-2 py-1 text-xs border border-red-500 text-red-500 rounded hover:bg-red-500 hover:text-white transition-colors"
+                                    onClick={() => handleHide(post.id, isCbPost)}
+                                >
+                                    <EyeOff className="w-3 h-3 mr-1" />
+                                    Hide
+                                </button>
+                            )}
+                        </div>
                         {!post.isHidden && (
-                            <button
-                                className="flex items-center px-2 py-1 text-xs border border-red-500 text-red-500 rounded hover:bg-red-500 hover:text-white transition-colors"
-                                onClick={() => handleHide(post.id, isCbPost)}
-                            >
-                                <EyeOff className="w-3 h-3 mr-1" />
-                                Hide
-                            </button>
+                            <p className="mb-2 text-sm text-gray-300">
+                                {post.description.length > 100 ? `${post.description.substring(0, 100)}...` : post.description}
+                                <br />
+                                <span className="text-red-300 text-xs">{post.Location}</span>
+                            </p>
                         )}
                     </div>
+        
+                    <div className="mb-4 aspect-w-16 aspect-h-9">
+                        {post.isHidden ? (
+                            <div className="w-full h-full bg-gray-800 rounded-lg flex items-center justify-center">
+                                <button
+                                    className="flex items-center px-3 py-2 text-sm bg-red-500 text-white rounded hover:bg-red-600 transition-colors"
+                                    onClick={() => handleUnhide(post.id, isCbPost)}
+                                >
+                                    <Eye className="w-4 h-4 mr-1" />
+                                    Unhide Post
+                                </button>
+                            </div>
+                        ) : (
+                            <img
+                                src={post.vehicleImage}
+                                alt={`${post.vehicleMake} ${post.vehicleModel}`}
+                                className="w-full h-full object-cover rounded-lg"
+                            />
+                        )}
+                    </div>
+        
                     {!post.isHidden && (
-                        <p className="mb-2 text-sm text-gray-300">
-                            {post.description.length > 100 ? `${post.description.substring(0, 100)}...` : post.description}
-                            <br />
-                            <span className="text-red-300 text-xs">{post.Location}</span>
-                        </p>
+                        <>
+                            <div className="grid grid-cols-2 gap-4 text-sm text-gray-300 mb-4">
+                                <p><span className="font-semibold text-gray-100">Make:</span> {post.vehicleMake}</p>
+                                <p><span className="font-semibold text-gray-100">Model:</span> {post.vehicleModel}</p>
+                                <p><span className="font-semibold text-gray-100">Year:</span> {post.vehicleYear}</p>
+                                <p><span className="font-semibold text-gray-100">Fuel:</span> {post.fuelType}</p>
+                                <p><span className="font-semibold text-gray-100">Price:</span> ${post.price}</p>
+                                <p><span className="font-semibold text-gray-100">Status:</span> {post.status}</p>
+                            </div>
+        
+                            <div className="mb-10">
+                                {isCbPost ? (
+                                    <p><span className="font-semibold text-gray-100">Contact:</span> {post.sellerPhone}</p>
+                                ) : (
+                                    <p className="text-lg font-bold text-red-400">
+                                        Contact Seller: <span className="text-white">{post.sellerPhone}</span>
+                                    </p>
+                                )}
+                            </div>
+                        </>
                     )}
                 </div>
-    
-                <div className="mb-4 aspect-w-16 aspect-h-9">
-                    {post.isHidden ? (
-                        <div className="w-full h-full bg-gray-800 rounded-lg flex items-center justify-center">
-                            <button
-                                className="flex items-center px-3 py-2 text-sm bg-red-500 text-white rounded hover:bg-red-600 transition-colors"
-                                onClick={() => handleUnhide(post.id, isCbPost)}
+                {isCbPost && !post.isHidden && (
+                    <div className="absolute bottom-0 left-0 w-full bg-gray-900 flex justify-center p-2">
+                        {isAvailable ? (
+                            <NavLink
+                                className="flex items-center px-4 py-2 text-sm bg-red-500 text-white rounded hover:bg-red-600 transition-colors"
+                                to="/purchase"
                             >
-                                <Eye className="w-4 h-4 mr-1" />
-                                Unhide Post
-                            </button>
-                        </div>
-                    ) : (
-                        <img
-                            src={post.vehicleImage}
-                            alt={`${post.vehicleMake} ${post.vehicleModel}`}
-                            className="w-full h-full object-cover rounded-lg"
-                        />
-                    )}
-                </div>
-    
-                {!post.isHidden && (
-                    <>
-                        <div className="grid grid-cols-2 gap-4 text-sm text-gray-300 mb-4">
-                            <p><span className="font-semibold text-gray-100">Make:</span> {post.vehicleMake}</p>
-                            <p><span className="font-semibold text-gray-100">Model:</span> {post.vehicleModel}</p>
-                            <p><span className="font-semibold text-gray-100">Year:</span> {post.vehicleYear}</p>
-                            <p><span className="font-semibold text-gray-100">Fuel:</span> {post.fuelType}</p>
-                            <p><span className="font-semibold text-gray-100">Price:</span> ${post.price}</p>
-                        </div>
-    
-                        <div className="mb-10">
-                            <p><span className="font-semibold text-gray-100">Contact:</span> {post.sellerPhone}</p>
-                        </div>
-                    </>
+                                <DollarSign className="w-4 h-4 mr-1" />
+                                Buy Now
+                            </NavLink>
+                        ) : (
+                            <span className="flex items-center px-4 py-2 text-sm bg-gray-700 text-gray-300 rounded">
+                                Sold
+                            </span>
+                        )}
+                    </div>
                 )}
             </div>
-            <div className="absolute bottom-0 left-0 w-full bg-gray-900 flex justify-center p-2">
-                <button
-                    className="flex items-center px-4 py-2 text-sm bg-red-500 text-white rounded hover:bg-red-600 transition-colors"
-                    onClick={() => handleBuy(post.id)}
-                >
-                    <DollarSign className="w-4 h-4 mr-1" />
-                    Buy Now
-                </button>
-            </div>
-        </div>
-    );      
+        );
+    };      
     
     if (loading) {
         return <div className="text-white text-center">Loading posts...</div>;
@@ -260,3 +276,4 @@ const Feeds = () => {
 };
 
 export default Feeds;
+
