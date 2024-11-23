@@ -32,7 +32,7 @@ export default function AdminLogin() {
         setError(data.message);
       } else {
         // Save the email to local storage on successful login
-        localStorage.setItem('userEmail', email); 
+        localStorage.setItem('userEmail', email);
         navigate("/adminpage");
         window.location.reload();       //forcibly reloading to update all the information as well as header (Though not recommended but still works xD) 
       }

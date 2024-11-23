@@ -53,8 +53,8 @@ function App() {
         <Route path="join" element={<ProtectedRoute isAuthenticated={isAuthenticated} element={JoinUs} />} />
         <Route path="InsuranceOptions" element={<ProtectedRoute isAuthenticated={isAuthenticated} element={InsuranceOptions} />} />
         <Route path="AdvanceSearch" element={<AdvancedSearch />} />
-        <Route path="profilepage" element={<ProtectedRoute isAuthenticated={isAuthenticated} element={ProfilePage} />} />
-        <Route path="adminpage" element={<ProtectedRoute isAuthenticated={isAuthenticated} element={AdminPage} />} />
+        <Route path="profilepage" element={<ProfilePage />} />
+        <Route path="adminpage" element={<AdminPage />} />
         <Route path="purchase" element={<ProtectedRoute isAuthenticated={isAuthenticated} element={Purchase} />} />
         <Route path="Browse" element={<BrowseCars />} />
         <Route path="Contact" element={<Contact />} />

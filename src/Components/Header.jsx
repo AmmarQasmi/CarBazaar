@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { NavLink, Link, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCirclePlus, faBars, faTimes, faShop, faUser } from '@fortawesome/free-solid-svg-icons';
+import { faCirclePlus, faBars, faTimes, faShop, faUser, faDashboard } from '@fortawesome/free-solid-svg-icons';
 
 const usersApiUrl = 'http://localhost:5000/api/users';
 
@@ -26,7 +26,7 @@ function Header() {
                 try {
                     const response = await fetch(usersApiUrl);
                     const userData = await response.json();
-                    const loggedInUser = userData.data.find(user => user.email === userEmail); //email found in local storage means user login hai 
+                    const loggedInUser = userData.data.find(user => user.email === userEmail);
                     if (loggedInUser) {
                         setIsLoggedIn(true);
                         setUser(loggedInUser);
@@ -196,6 +196,15 @@ function Header() {
                                 <NavLink to="/profilepage">
                                     <span className="ml-2 text-gray-300">{user.name}</span>
                                 </NavLink>
+                                {user.role_id === 1 && (
+                                    <NavLink
+                                        to="/adminpage"
+                                        className="ml-4 text-gray-300 hover:text-red-400"
+                                    >
+                                        <FontAwesomeIcon icon={faDashboard} className="mr-2" />
+                                        Dashboard
+                                    </NavLink>
+                                )}
                                 <button onClick={handleLogout} className="ml-4 text-gray-300 hover:text-red-400">
                                     Logout
                                 </button>

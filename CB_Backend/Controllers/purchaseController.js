@@ -69,7 +69,7 @@ exports.purchaseController = async (req, res) => {
             await client.query("ROLLBACK");
             return res.status(400).json({ message: "Post is not available for purchase." });
         }
-        
+
         // Fetch user details
         const userCheckQuery = `
             SELECT U_id, name FROM USERS WHERE email = $1
@@ -118,60 +118,72 @@ exports.purchaseController = async (req, res) => {
 
         // Send email notifications
         try {
-            const userSubject = "Thank You for Your Purchase!";
-            const userText = `
+            // User's email content
+            const userSubject = "Thank You for Your Inquiry! We Will Get in Touch Soon!";
+                        const userText = `
                 Hello ${userName},
-                
-                Thank you for purchasing a vehicle with us! Here are your purchase details:
-                - Purchase ID: ${purchaseResult.rows[0].p_id}
-                - Purchase Date: ${purchaseDate}
+
+                Thank you for your interest in purchasing a vehicle through our platform! We have received your inquiry and our team will be in touch with you soon regarding the next steps.
+
+                Here are the details of your inquiry:
                 - Vehicle ID: ${vehicle_v_id}
                 - Payment Type: ${payment_type}
-                - Purchase Price: ${purchase_price}
+                - Inquiry Price: ${purchase_price}
+                - Post ID: ${post_post_id}
                 
-                We appreciate your business and hope to serve you again!
+                We appreciate your interest, and we'll contact you soon for further assistance.
+
+                Best regards,
+                The [Company Name] Team
             `;
             const userHtml = `
                 <p>Hello <strong>${userName}</strong>,</p>
-                <p>Thank you for purchasing a vehicle with us! Here are your purchase details:</p>
+                <p>Thank you for your interest in purchasing a vehicle through our platform! We have received your inquiry and our team will be in touch with you soon regarding the next steps.</p>
+                <p>Here are the details of your inquiry:</p>
                 <ul>
-                    <li><strong>Purchase ID:</strong> ${purchaseResult.rows[0].p_id}</li>
-                    <li><strong>Purchase Date:</strong> ${purchaseDate}</li>
                     <li><strong>Vehicle ID:</strong> ${vehicle_v_id}</li>
                     <li><strong>Payment Type:</strong> ${payment_type}</li>
-                    <li><strong>Purchase Price:</strong> ${purchase_price}</li>
+                    <li><strong>Inquiry Price:</strong> ${purchase_price}</li>
+                    <li><strong>Post ID:</strong> ${post_post_id}</li>
                 </ul>
-                <p>We appreciate your business and hope to serve you again!</p>
+                <p>We appreciate your interest, and we'll contact you soon for further assistance.</p>
+                <p>Best regards,</p>
+                <p>The <strong>CarBazaar</strong> Team</p>
             `;
 
+            // Send the email to the user
             await sendEmail(email, userSubject, userText, userHtml);
-            console.log(`Confirmation email sent to user: ${email}`);
+            console.log(`Inquiry email sent to user: ${email}`);
 
+            // Admin's email content
             const adminEmail = process.env.EMAIL;
-            const adminSubject = `New Purchase Notification - Purchase ID: ${purchaseResult.rows[0].p_id}`;
+            const adminSubject = `New Purchase Inquiry - Post ID: ${post_post_id}`;
             const adminText = `
-                A new purchase has been completed:
-                - Purchase ID: ${purchaseResult.rows[0].p_id}
-                - User: ${userName} (${email})
-                - Purchase Date: ${purchaseDate}
-                - Vehicle ID: ${vehicle_v_id}
-                - Payment Type: ${payment_type}
-                - Purchase Price: ${purchase_price}
-            `;
+                    A potential customer has inquired about purchasing a vehicle through the platform:
+                    - User: ${userName} (${email})
+                    - Vehicle ID: ${vehicle_v_id}
+                    - Inquiry Price: ${purchase_price}
+                    - Payment Type: ${payment_type}
+                    - Post ID: ${post_post_id}
+                    
+                    Please review the inquiry and contact the user to assist them with the next steps.
+                `;
             const adminHtml = `
-                <h2>A new purchase has been completed:</h2>
+                <h2>A potential customer has inquired about purchasing a vehicle through the platform:</h2>
                 <ul>
-                    <li><strong>Purchase ID:</strong> ${purchaseResult.rows[0].p_id}</li>
                     <li><strong>User:</strong> ${userName} (${email})</li>
-                    <li><strong>Purchase Date:</strong> ${purchaseDate}</li>
                     <li><strong>Vehicle ID:</strong> ${vehicle_v_id}</li>
+                    <li><strong>Inquiry Price:</strong> ${purchase_price}</li>
                     <li><strong>Payment Type:</strong> ${payment_type}</li>
-                    <li><strong>Purchase Price:</strong> ${purchase_price}</li>
+                    <li><strong>Post ID:</strong> ${post_post_id}</li>
                 </ul>
+                <p>Please review the inquiry and contact the user to assist them with the next steps.</p>
             `;
 
+            // Send the email to the admin
             await sendEmail(adminEmail, adminSubject, adminText, adminHtml);
-            console.log(`Notification email sent to admin: ${adminEmail}`);
+            console.log(`Inquiry notification email sent to admin: ${adminEmail}`);
+
         } catch (emailError) {
             console.error('Failed to send email:', emailError);
             // You might want to implement a retry mechanism or alert system here
