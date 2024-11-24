@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { NavLink } from 'react-router-dom';
 import { Shield, Car, FileText, ChevronDown, ChevronUp } from 'lucide-react';
@@ -24,7 +24,29 @@ function InsuranceOptions() {
     };
 
     const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
+        const { name, value } = e.target;
+        setFormData(prevData => {
+            const newData = { ...prevData, [name]: value };
+            
+            // Automatically set coverage_amount based on services_service_id
+            if (name === 'services_service_id') {
+                switch (value) {
+                    case '11':
+                        newData.coverage_amount = '799.99';
+                        break;
+                    case '12':
+                        newData.coverage_amount = '1299.99';
+                        break;
+                    case '13':
+                        newData.coverage_amount = '1599.99';
+                        break;
+                    default:
+                        newData.coverage_amount = '';
+                }
+            }
+            
+            return newData;
+        });
     };
 
     const handleSubmit = async (e) => {
@@ -87,14 +109,15 @@ function InsuranceOptions() {
                     </h2>
                     <div className="grid md:grid-cols-3 gap-6">
                         {[
-                            { title: "Comprehensive", id: 11, icon: Car },
-                            { title: "Collision", id: 12, icon: Car },
-                            { title: "Liability", id: 13, icon: FileText }
+                            { title: "QuickLube Center", id: 11, icon: Car, coverage: "$799.99" },
+                            { title: "Brake Masters", id: 12, icon: Car, coverage: "$1299.99" },
+                            { title: "Car Care Center", id: 13, icon: FileText, coverage: "$1599.99" }
                         ].map((type) => (
                             <div key={type.id} className="bg-gray-700 p-6 rounded-lg shadow-md hover:bg-gray-600 transition duration-300">
                                 <type.icon className="w-12 h-12 text-red-400 mb-4" />
                                 <h3 className="text-xl font-semibold mb-2">{type.title}</h3>
                                 <p className="text-gray-300">Service ID: {type.id}</p>
+                                <p className="text-gray-300">Coverage: {type.coverage}</p>
                             </div>
                         ))}
                     </div>
@@ -135,13 +158,12 @@ function InsuranceOptions() {
                                     <div>
                                         <label className="block text-gray-300 mb-2">Coverage Amount</label>
                                         <input
-                                            type="number"
+                                            type="text"
                                             name="coverage_amount"
                                             value={formData.coverage_amount}
-                                            onChange={handleChange}
                                             className="w-full px-4 py-2 bg-gray-600 border border-gray-500 rounded-md focus:ring-2 focus:ring-red-500 text-white"
-                                            placeholder="Enter coverage amount"
-                                            required
+                                            placeholder="Coverage amount"
+                                            readOnly
                                         />
                                     </div>
                                     <div>
@@ -168,15 +190,18 @@ function InsuranceOptions() {
                                     </div>
                                     <div>
                                         <label className="block text-gray-300 mb-2">Service ID</label>
-                                        <input
-                                            type="number"
+                                        <select
                                             name="services_service_id"
                                             value={formData.services_service_id}
                                             onChange={handleChange}
                                             className="w-full px-4 py-2 bg-gray-600 border border-gray-500 rounded-md focus:ring-2 focus:ring-red-500 text-white"
-                                            placeholder="Enter service ID"
                                             required
-                                        />
+                                        >
+                                            <option value="">Select a service</option>
+                                            <option value="11">11 - QuickLube Center</option>
+                                            <option value="12">12 - Brake Masters</option>
+                                            <option value="13">13 - Car Care Center</option>
+                                        </select>
                                     </div>
                                     <div>
                                         <label className="block text-gray-300 mb-2">Vehicle ID</label>
