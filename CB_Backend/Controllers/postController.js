@@ -5,10 +5,10 @@ exports.createPost = async (req, res) => {
     const { price, description, email, make, model, year, fuel_type, mileage } = req.body;
     let uploadedImages = [];
 
-    if (req.files) {
+    if (req.files && req.files.length > 0) {
         uploadedImages = req.files.map(file => `/uploads/${file.filename}`);
-    } else if (images) {
-        uploadedImages = images.split(','); // Handle case where images are URLs
+    } else if (req.body.images) {
+        uploadedImages = req.body.images.split(','); // Handle case where images are URLs
     }
 
     // Check if all required fields are provided
@@ -39,7 +39,7 @@ exports.createPost = async (req, res) => {
         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING V_id;
       `;
 
-        const vehicleImage = uploadedImages[0] || images.split(",")[0]; // Use the first image as the vehicle image
+        const vehicleImage = uploadedImages[0]; // Use the first image as the vehicle image
         const vehicleResult = await pool.query(insertVehicleQuery, [
             make,
             model,
@@ -61,7 +61,7 @@ exports.createPost = async (req, res) => {
       `;
         const postResult = await pool.query(insertPostQuery, [
             description,
-            users_u_id, // Use the user's ID as the seller ID
+            users_u_id,
             vehicle_v_id,
         ]);
 
@@ -163,7 +163,6 @@ exports.createPost = async (req, res) => {
         });
     }
 };
-
 // Mark post as sold
 exports.markPostAsSold = async (req, res) => {
     const { postId } = req.params; // Assuming postId is passed in the URL
