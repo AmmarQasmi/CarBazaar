@@ -273,7 +273,6 @@ exports.getPostsById = async (req, res) => {
 };
 
 // Update a post by ID
-// Update a post by ID
 exports.updatePost = async (req, res) => {
     const { post_id } = req.params;
     const { price, vehicle_image, description } = req.body;
@@ -288,9 +287,10 @@ exports.updatePost = async (req, res) => {
 
     try {
         // Update the post description
+        // COALESCE  Return the first non-null value in a list
         let updatePostQuery = `
             UPDATE POST
-            SET description = COALESCE($1, description)
+            SET description = COALESCE($1, description) 
             WHERE post_id = $2
             RETURNING *;
         `;
